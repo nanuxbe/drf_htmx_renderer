@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_auto_endpoint',
     'htmx_renderer',
+
+    # TEMPLATES
+    'bootstrap5',
+    'mathfilters',
 ]
 ```
 
