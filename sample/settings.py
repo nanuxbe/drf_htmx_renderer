@@ -31,12 +31,25 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # This Sample app
+    'sample',
+
+    # Defaults
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # API
+    'rest_framework',
+    'drf_auto_endpoint',
+    'mathfilters',
+    'htmx_renderer',
+
+    # UI
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +134,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DRF_AUTO_METADATA_ADAPTER = 'htmx_renderer.adapters.HTMXEndpointAdapter'
+DRF_AUTO_BASE_SERIALIZER = 'htmx_renderer.serializers.HTMXModelSerializer'
+DRF_AUTO_BASE_VIEWSET = 'htmx_renderer.views.ModelViewSet'
+DRF_AUTO_ROUTER_CLASS = 'htmx_renderer.routers.HTMXRendererRouter'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'htmx_renderer.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+}
+

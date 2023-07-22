@@ -23,31 +23,31 @@ python manage.py runserver
 Add these to Django `settings.py`
 
 ```python
-    DRF_AUTO_METADATA_ADAPTER = 'htmx_renderer.adapters.HTMXEndpointAdapter'
-    DRF_AUTO_BASE_SERIALIZER = 'htmx_renderer.serializers.HTMXModelSerializer'
-    DRF_AUTO_BASE_VIEWSET = 'htmx_renderer.views.ModelViewSet'
-    DRF_AUTO_ROUTER_CLASS = 'htmx_renderer.routers.HTMXRendererRouter'
+DRF_AUTO_METADATA_ADAPTER = 'htmx_renderer.adapters.HTMXEndpointAdapter'
+DRF_AUTO_BASE_SERIALIZER = 'htmx_renderer.serializers.HTMXModelSerializer'
+DRF_AUTO_BASE_VIEWSET = 'htmx_renderer.views.ModelViewSet'
+DRF_AUTO_ROUTER_CLASS = 'htmx_renderer.routers.HTMXRendererRouter'
 
-    REST_FRAMEWORK = {
-        'DEFAULT_RENDERER_CLASSES': [
-            'htmx_renderer.renderers.TemplateHTMLRenderer',
-            'rest_framework.renderers.JSONRenderer',
-        ],
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 50,
-    }
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'htmx_renderer.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+}
 ```
 
 Add `htmx_renderer` in to `INSTALLED_APPS`:
 
 ```python
 INSTALLED_APPS = [
-  ...
+    ...
 
-  # API
-  'rest_framework',
-  'drf_auto_endpoint',
-  'htmx_renderer',
+    # API
+    'rest_framework',
+    'drf_auto_endpoint',
+    'htmx_renderer',
 ]
 ```
 
@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 Add this to the main `urls.py`
 
 ```python
-fom drf_auto_endpoint.router import router
+from drf_auto_endpoint.router import router
 
 urlpatterns = [
     ...
