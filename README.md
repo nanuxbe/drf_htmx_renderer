@@ -35,7 +35,6 @@ Add these to Django `settings.py`
 DRF_AUTO_METADATA_ADAPTER = 'htmx_renderer.adapters.HTMXEndpointAdapter'
 DRF_AUTO_BASE_SERIALIZER = 'htmx_renderer.serializers.HTMXModelSerializer'
 DRF_AUTO_BASE_VIEWSET = 'htmx_renderer.views.ModelViewSet'
-DRF_AUTO_ROUTER_CLASS = 'htmx_renderer.routers.HTMXRendererRouter'
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [

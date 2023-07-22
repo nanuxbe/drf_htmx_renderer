@@ -2,6 +2,7 @@ import json
 import math
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from django.urls import reverse
 
@@ -136,4 +137,38 @@ class TemplateHTMLRenderer(DRFTemplateHTMLRenderer):
                                 for i, p in enumerate(partials)}
 
         return context
+
+    def get_template_names(self, response, view):
+        from rest_framework.routers import APIRootView
+
+        try:
+            return super().get_template_names(response, view)
+        except ImproperlyConfigured:
+            pass
+
+        if view.request.headers.get('Hx-Request', False):
+            if 'partials' in view.request.query_params:
+                return ['htmx/partial.html']
+            base_dir = 'htmx'
+        else:
+            base_dir = 'html'
+
+        if isinstance(view, APIRootView):
+            return [
+                f'{base_dir}/root.html',
+            ]
+
+        templates = [
+            f'{base_dir}/{view.endpoint.model.__module__}_{view.endpoint.model.__name__}_{view.action}.html',
+            f'{base_dir}/{view.endpoint.model.__name__}_{view.action}.html',
+            f'{base_dir}/{view.action}.html',
+        ]
+
+        if getattr(getattr(view, view.action), 'detail', False):
+            templates += [f'{base_dir}/retrieve.html', ]
+        else:
+            templates += [f'{base_dir}/list.html', ]
+
+        return templates
+
 
