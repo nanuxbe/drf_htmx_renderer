@@ -17,6 +17,11 @@ def field_by_name(fields, field_name):
 
 
 @register.filter
+def url(action, id):
+    return action['url'].replace(':id', str(id))
+
+
+@register.filter
 def app_name(full_name):
     return full_name.split('.')[0]
 

@@ -5,25 +5,37 @@
     <td>{% include_field_widget %}</td>
   {% endfor %}
   {% for action in meta.custom_actions %}
-    <td></td>
+    <td>
+      <a
+        class="{{action.btn_class}}"
+        hx-{{action.verb}}="{{action|url:record.id}}?partials=single_line"
+        hx-target="#data-table-record-{{record.id}}"
+        {% hx_swap push_url=False %}
+        title="{{action.text}}"
+      >
+      <i class="{%if action.icon_class%}{{action.icon_class}}{%else%}fa fa-cogs{%endif%}"></i>
+      </a>
+    </td>
   {% endfor %}
   <td>
     <a
-      href="{% url view.basename|add:'-detail' record.id %}"
       hx-get="{% url view.basename|add:'-detail' record.id %}"
       hx-target="#main"
       {% hx_swap push_url=True %}
+      class="btn text-primary"
+      title="Edit"
     >
       <i class="fa fa-pencil"></i>
     </a>
   </td>
   <td>
     <a
-      class="text-danger"
+      class="btn text-danger"
       hx-delete="{% url view.basename|add:'-detail' record.id %}"
       hx-target="#main"
       {% hx_swap push_url=False %}
       hx-confirm="Do you really want to delete {{record|to_str}}?"
+      title="Delete"
     >
       <i class="fa fa-trash"></i>
     </a>

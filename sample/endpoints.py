@@ -1,7 +1,13 @@
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+
+from drf_auto_endpoint.decorators import custom_action
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import register
+from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.response import Response
 
-from .models import Category, Product
+from .models import Category, Product, Project
 
 
 @register
@@ -20,3 +26,25 @@ class ProductEndpoint(Endpoint):
     filter_fields = ('category_id', )
     ordering_fields = ('name', 'price', )
 
+
+@register
+class UserEndpoint(Endpoint):
+    model = get_user_model()
+    read_only = True
+    list_me = False
+
+
+@register
+class ProjectEndpoint(Endpoint):
+    model = Project
+    list_display = ('name', 'state', 'owner')
+
+    @custom_action('POST', icon_class='fa fa-arrow-right', btn_class='btn btn-outline-success')
+    def start(self, request, pk):
+        obj = get_object_or_404(self.model, pk=pk)
+        if obj.state not in ('draft', 'finished'):
+            raise MethodNotAllowed(request.method)
+        obj.state = 'running'
+        obj.save()
+        data = self.get_serializer(obj).data
+        return Response(data)
