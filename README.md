@@ -1,5 +1,13 @@
 # DRF HTMX Renderer
 
+`DRF HTMX Renderer` is a (renderer)[https://www.django-rest-framework.org/api-guide/renderers/] for [Django REST Framework](https://www.django-rest-framework.org/).
+
+In the vain of the browsable API or the admin renderer shipped with DRF, it allows for browsing the API directly in your browser and making it fully human-friendly.
+
+To learn more about this project, you can watch [this talk](https://program.europython.eu/europython-2023/talk/BRY8JS/) - Slides available [here](https://slides.levit.be/ep2023/).
+
+The aim of the project is to provide a customizable and extendable interface for data management that can be presented to the final user.
+
 ## Install
 
 ### With pip
