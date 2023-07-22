@@ -13,7 +13,8 @@ pip install drf-htmx-renderer
 ```
 git clone git@github.com:nanuxbe/drf_htmx_renderer.git
 cd drf_htmx_renderer
-python setup.py develop
+pip install -e .
+pip insatll -r requirements-dev.txt
 
 python manage.py runserver
 ```

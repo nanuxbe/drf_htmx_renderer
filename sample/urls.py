@@ -14,12 +14,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 
 from drf_auto_endpoint.router import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
+    path('', RedirectView.as_view(url='/api/v1/')),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+
+    try:
+        import debug_toolbar
+        urlpatterns += [
+            path('__debug__/', include('debug_toolbar.urls')),
+        ]
+    except ImportError:
+        # Debug toolbar not installed
+        pass
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
