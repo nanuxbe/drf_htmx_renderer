@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drf-htmx-renderer"
+version = "0.0.1"
+description = "HTMX renderer for Django REST FRAMEWORK"
+authors = [
+    {name = "Emmanuelle Delescolle", email = "info@levit.be"},
+]
+dependencies = [
+    "Django>=3.2",
+    "drf-schema-adapter>=3.0.0",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT License"}
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+
+[project.urls]
+Homepage = "https://github.com/nanuxbe/drf_htmx_renderer"
+
+[tool.setuptools]
+packages = ["htmx_renderer"]
