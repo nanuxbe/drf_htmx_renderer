@@ -6,7 +6,7 @@
 
 {% block edit_value %}
   <select
-    name="{{rel}}"
+    name="{{field_name}}"
     class="form-select"
     hx-trigger="change"
     hx-get="{% qs rel %}&partials=list_content,list_footer"
