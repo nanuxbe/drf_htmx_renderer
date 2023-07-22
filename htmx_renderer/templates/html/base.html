@@ -1,11 +1,12 @@
 {% load bootstrap5 %}
 {% load static %}
 
+<!DOCTYPE html>
 <html>
   <head>
-    <link href="{% static 'css/app.css' %}" rel="stylesheet">
     <link href="{% static 'css/renderer.css' %}" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.3" integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua" crossorigin="anonymous"></script>
+    {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="htmx-config" content='{"useTemplateFragments":"true"}'>
