@@ -1,0 +1,19 @@
+{% load htmx_renderer_tags %}
+
+<tfoot id="data-table-footer" {% hx_attrs %} class="fade-me-out fade-me-in">
+  <tr>
+    <td colspan={% if meta.list_display|length > 3%}2{% else %}20{% endif %}>
+      <small>{{count}} record(s) found</small>
+    </td>
+    {% if meta.list_display|length <= 3 %}
+  </tr>
+  <tr>
+    {% endif %}
+    <td class="pagination-td" colspan=50>
+      {% if is_paginated %}
+        {% include './pagination.html' %}
+      {% endif %}
+    </td>
+  </tr>
+</tfoot>
+

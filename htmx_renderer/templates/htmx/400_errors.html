@@ -1,0 +1,7 @@
+<div class="alert alert-danger" hx-swap-oob="true" id="error_container">
+  <ul>
+    {% for field, error in errors.items %}
+    <li>{{field}}: {% for item in error %} <span>{{item}}</span>{% endfor %}</li>
+    {% endfor %}
+  </ul>
+</div>

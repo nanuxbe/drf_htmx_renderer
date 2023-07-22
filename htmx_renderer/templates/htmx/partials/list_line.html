@@ -1,0 +1,32 @@
+{% load htmx_renderer_tags %}
+
+<tr id="data-table-record-{{record.id}}" {% if htmx %}class="flash-success"{% endif %}>
+  {% for field_name in meta.list_display %}
+    <td>{% include_field_widget %}</td>
+  {% endfor %}
+  {% for action in meta.custom_actions %}
+    <td></td>
+  {% endfor %}
+  <td>
+    <a
+      href="{% url view.basename|add:'-detail' record.id %}"
+      hx-get="{% url view.basename|add:'-detail' record.id %}"
+      hx-target="#main"
+      {% hx_swap push_url=True %}
+    >
+      <i class="fa fa-pencil"></i>
+    </a>
+  </td>
+  <td>
+    <a
+      class="text-danger"
+      hx-delete="{% url view.basename|add:'-detail' record.id %}"
+      hx-target="#main"
+      {% hx_swap push_url=False %}
+      hx-confirm="Do you really want to delete {{record|to_str}}?"
+    >
+      <i class="fa fa-trash"></i>
+    </a>
+  </td>
+</tr>
+

@@ -1,0 +1,20 @@
+{% extends "./base.html" %}
+{% load htmx_renderer_tags %}
+
+{% block content %}
+  {% block include %}
+    {% include_htmx_partial "../list" %}
+  {% endblock include %}
+        
+
+  <!-- ul>
+    <li>{{meta.search_enabled}}</li>
+    <li>{{meta.sortable_by|safe}}</li>
+    <li>{{current_ordering|safe}}</li>
+    <li>{{meta.ordering_fields|safe}}</li>
+    <li>{{meta.filter_fields|safe}}</li>
+    {%for key in meta.keys %}
+      <li>{{key}}</li>
+    {% endfor %}
+  </ul -->
+{% endblock content %}

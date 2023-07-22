@@ -1,0 +1,9 @@
+{% extends "./base.html" %}
+{% load htmx_renderer_tags %}
+
+{% block content %}
+  {% block include %}
+    {% include_htmx_partial "../root" %}
+  {% endblock include %}
+{% endblock content %}
+

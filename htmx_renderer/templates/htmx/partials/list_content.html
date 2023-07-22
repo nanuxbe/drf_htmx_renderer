@@ -1,0 +1,8 @@
+{% load htmx_renderer_tags %}
+
+<tbody id="data-table-content" {% hx_attrs %} class="fade-me-out fade-me-in">
+  {% for record in results %}
+    {% include './list_line.html' %}
+  {% endfor %}
+</tbody>
+

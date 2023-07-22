@@ -1,0 +1,51 @@
+{% load htmx_renderer_tags %}
+
+<nav aria-label="breadcrumb" class="bg-light" id="bredcrumbs" hx-swap-oob="true">
+  <ol class="breadcrumb ms-4 mt-1">
+    <li class="breadcrumb-item {% if 'app' not in meta %}active{% endif %}" {% if 'app' not in meta %}aria-current="page"{% endif %}>
+      {% if 'app' in meta %}
+        <a
+            href="{% url 'api-root' %}"
+          hx-get="{% url 'api-root' %}"
+          hx-target="#main"
+          {% hx_swap push_url=True %}
+        >Home</a>
+      {% else %}
+        Home
+      {% endif %}
+    </li>
+    {% if 'app' in meta %}
+      <li class="breadcrumb-item {% if 'model' not in meta %}active{% endif %}" {% if 'model' not in meta %}aria-current="page"{% endif %}>
+        {% if 'model' in meta %}
+          <!-- a
+            href="{% url 'api-root' %}{{meta.app|app_name}}/"
+            hx-get="{% url 'api-root' %}{{meta.app|app_name}}/"
+            hx-target="#main"
+            {% hx_swap push_url=True %}
+          >{{meta.app|app_name}}</a -->
+          {{meta.app|app_name}}
+        {% else %}
+          {{meta.app|app_name}}
+        {% endif %}
+      </li>
+      {% if 'model' in meta %}
+        <li class="breadcrumb-item {% if not id %}active{% endif %}" {% if not id %}aria-current="page"{% endif %}>
+          {% if id %}
+            <a
+              href="{% url view.basename|add:'-list' %}"
+              hx-get="{% url view.basename|add:'-list' %}"
+              hx-target="#main"
+              {% hx_swap push_url=True %}
+            >{{meta.model}}</a>
+          {% else %}
+            {{meta.model}}
+          {% endif %}
+        </li>
+        {% if id %}
+        <li class="breadcrumb-item active" aria-current="page">{% record_name %}</li>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </ol>
+</nav>
+

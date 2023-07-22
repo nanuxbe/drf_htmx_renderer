@@ -1,0 +1,16 @@
+@keyframes success-fade {
+  from {
+    background: #096;
+  }
+  to {
+    background: #fff;
+  }
+}
+
+.flash-success {
+  animation: success-fade 1s ease-in-out 0s;
+}
+
+[hx-target] {
+  cursor: pointer;
+}

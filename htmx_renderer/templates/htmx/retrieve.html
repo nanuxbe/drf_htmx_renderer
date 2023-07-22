@@ -1,0 +1,16 @@
+{% load htmx_renderer_tags %}
+
+{% if request.headers|get:'HX-Request' %}
+  {% include 'htmx/partials/navigation.html' %}
+  <div id="error_container" hx-swap-oob="true"></div>
+{% endif %}
+
+<div id="main">
+  <h2 span class="row">
+    <span class="col">
+      {{meta.name}}
+    </span>
+  </h2>
+    
+  {% include_htmx_partial "form" %}
+</div>

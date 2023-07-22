@@ -1,0 +1,22 @@
+{
+  "name": "htmx_renderer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "config": {
+    "src_scss": "sass",
+    "dest_css": "static/css"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "node-sass": "^9.0.0"
+  },
+  "scripts": {
+    "sass": "node-sass -o $npm_package_config_dest_css $npm_package_config_src_scss",
+    "sass:watch": "node-sass -o $npm_package_config_dest_css $npm_package_config_src_scss --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

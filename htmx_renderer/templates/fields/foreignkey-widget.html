@@ -1,0 +1,23 @@
+{% extends "fields/_default-widget.html" %}
+
+{% block value_only %}
+  {{ record|fk_str:field }}
+{% endblock %}
+
+{% block edit_value %}
+  <select
+    name="{{rel}}"
+    class="form-select"
+    hx-trigger="change"
+    hx-get="{% qs rel %}&partials=list_content,list_footer"
+    hx-target="#data-table-content"
+    {% hx_swap push_url=is_filter %}
+  >
+    <option value=""></option>
+    {% for id, label in field|select_list %}
+      <option value="{{id}}" {% if id == value.id or is_filter and active_filters|get:rel == id %} selected{% endif %}>
+        {{label}}
+      </option>
+    {% endfor %}
+  </select>
+{% endblock %}

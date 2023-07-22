@@ -1,0 +1,32 @@
+{% extends "fields/_default-widget.html" %}
+{% load htmx_renderer_tags %}
+
+{% block value_only %}
+  {% with value=record|get:field_name %}
+    {% for choice in field.extra.choices %}
+      {% if choice.value == value %}
+        {{ choice.label }}
+      {% endif %}
+    {% endfor %}
+  {% endwith %}
+{% endblock %}
+
+{% block edit_value %}
+  <select
+    name="{{field_name}}"
+    class="form-select"
+    hx-trigger="change"
+    hx-get="{% qs field_name %}&partials=list_content,list_footer"
+    hx-target="#data-table-content"
+    {% hx_swap push_url=is_filter %}
+  >
+    {% with value=record|get:field_name %}
+      <option value=""></option>
+      {% for choice in field.extra.choices %}
+        <option value="{{choice.value}}"{% if choice.value == value or is_filter and active_filters|get:field_name == choice.value %} selected{% endif %}>
+          {{choice.label}}
+        </option>
+      {% endfor %}
+    {% endwith %}
+  </select>
+{% endblock %}

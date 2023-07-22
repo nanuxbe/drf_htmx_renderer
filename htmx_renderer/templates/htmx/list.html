@@ -1,0 +1,35 @@
+{% load htmx_renderer_tags %}
+
+{% if request.headers|get:'HX-Request' %}
+  {% include 'htmx/partials/navigation.html' %}
+  <div id="error_container" hx-swap-oob="true"></div>
+{% endif %}
+
+<div id="main">
+  <h2 class="row">
+    <span class="col">
+      {{meta.name}}
+    </span>
+    {% if meta.search_enabled %}
+      <small class="col text-end input-group">
+        <span class="input-group-text"><i class="fa fa-search"></i></span>
+        <input
+          type="text" 
+          name="search"
+          class="form-control"
+          placeholder="Search..."
+          hx-trigger="keyup changed delay:500ms"
+          hx-get="{% qs 'search' page_query_param %}&partials=list_content,list_footer"
+          hx-target="#data-table-content"
+          {% hx_swap push_url=True %}
+          />
+      </small>
+    {% endif %}
+  </h2>
+
+  <table class="table table-striped" id="records-list">
+    {% include_htmx_partial "list_header" %}
+    {% include_htmx_partial "list_content" %}
+    {% include_htmx_partial "list_footer" %}
+  </table>
+</div>

@@ -1,0 +1,36 @@
+{% extends "fields/_default-widget.html" %}
+{% load htmx_renderer_tags %}
+
+{% block value_only %}
+  {% if record|get:field_name %}
+    <i class="text-succes fa fa-check"></i>
+  {% else %}
+    <i class="text-danger fa fa-xmark"></i>
+  {% endif %}
+{% endblock %} 
+
+{% block edit_value %}
+  {% if is_filter %}
+    <select
+      name="{{field_name}}"
+      class="form-select"
+      hx-trigger="change"
+      hx-get="{% qs field_name %}&partials=list_content,list_footer"
+      hx-target="#data-table-content"
+      {% hx_swap push_url=is_filter %}
+    >
+      <option></option>
+      <option value="true">Yes</option>
+      <option value="false">No</option>
+    </select>
+  {% else %}
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="{{field_name}}"
+        {% if record|get:field_name %}checked{% endif %}
+      />
+    </div>
+  {% endif %}
+{% endblock %}

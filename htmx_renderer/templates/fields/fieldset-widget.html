@@ -1,0 +1,9 @@
+<fieldset>
+  {% if 'title' in metadata and metadata.title %}
+    <legend>{{metadata.title}}</legend>
+  {% endif %}
+  {% for field in metadata.fields %}
+    {{field.name}}
+    {% include_field_widget field_name=field.name metadata=field is_editable=True %}
+  {% endfor %}
+</fieldset>

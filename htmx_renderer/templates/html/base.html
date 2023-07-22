@@ -1,0 +1,58 @@
+{% load bootstrap5 %}
+{% load static %}
+
+<html>
+  <head>
+    <link href="{% static 'css/app.css' %}" rel="stylesheet">
+    <link href="{% static 'css/renderer.css' %}" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.3" integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua" crossorigin="anonymous"></script>
+    {% bootstrap_javascript %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="htmx-config" content='{"useTemplateFragments":"true"}'>
+  </head>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% block header %}
+      <nav class="navbar navbar-dark bg-primary navbar-expand-lg shadow-sm">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/admin/">Admin</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'api-root' %}">Home</a>
+              </li>
+              <!-- li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </li -->
+            </ul>
+          </div>
+        </div>
+      </nav>           
+
+      {% include 'htmx/partials/navigation.html' %}
+    
+    {% endblock %}
+    <div class="container" id="content">
+      {% block content %}
+        <h1>Hello World</h1>
+      {% endblock %}
+    </div>
+    <div id="error_container"></div>
+    <script>
+      document.body.addEventListener('htmx:beforeOnLoad', function (evt) {
+        if (evt.detail.xhr.status === 400) {
+          evt.detail.shouldSwap = true;
+          evt.detail.isError = false;
+        }
+      });
+    </script>
+  </body>
+</html>

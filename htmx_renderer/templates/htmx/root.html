@@ -1,0 +1,28 @@
+{% load htmx_renderer_tags %}
+
+{% if request.headers|get:'HX-Request' %}
+  {% include 'htmx/partials/navigation.html' %}
+{% endif %}
+
+<div id="main">
+  <h2 class="row">
+    <span class="col">
+      {{meta.name}}
+    </span>
+  </h2>
+
+  {% for app in meta.applications %}
+    <h3>{{app.name}}</h3>
+    <ul>
+      {% for model in app.models %}
+      <li><a
+        href="./{{model.endpoint}}/"
+        hx-get="./{{model.endpoint}}/"
+        hx-target="#main"
+        {% hx_swap push_url=True %}
+      >{{model.name}}</a></li>
+      {% endfor %}
+    </ul>
+    <br/>
+  {% endfor %}
+</div>

@@ -1,0 +1,83 @@
+{% load htmx_renderer_tags %}
+{% load mathfilters %}
+
+<nav aria-label="Page navigation" id="pagination-nav" {% hx_attrs %} class="align-self-end fade-me-out fade-me-in">
+  <ul class="pagination">
+    {% if previous %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          hx-target="#data-table-content"
+          {% hx_swap push_url=True %}
+          hx-get="{{previous}}&partials=list_content,pagination"
+        >Previous</a>
+      </li>
+    {% endif %}
+    {% if show_pages %}
+      {% for i in pages_around|range1 %}
+        {% if i < current_page|sub:pages_around %}
+          <li class="page-item{% if i == current_page %} active{% endif %}">
+            <a
+              class="page-link"
+              hx-target="#data-table-content"
+              {% hx_swap push_url=True %}
+              hx-get="{% qs page_query_param %}&{{page_query_param}}={{i}}&partials=list_content,pagination"
+            >{{i}}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if pages_around|add:1 < current_page|sub:pages_around %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">...</a>
+        </li>
+      {% endif %}
+      {% for i in current_page|range_around:pages_around %}
+        {% if i > 0 and i <= total_pages %}
+          <li class="page-item{% if i == current_page %} active{% endif %}">
+            {% if i == current_page %}
+              <a class="page-link" href="#">{{i}}</a>
+            {% else %}
+              <a
+                class="page-link"
+                hx-target="#data-table-content" 
+                {% hx_swap push_url=True %}
+                hx-get="{% qs page_query_param %}&{{page_query_param}}={{i}}&partials=list_content,pagination"
+              >{{i}}</a>
+            {% endif %}
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if current_page|add:pages_around < total_pages|sub:pages_around %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">...</a>
+        </li>
+      {% endif %}
+      {% for i in total_pages|range_to:pages_around %}
+        {% if i > current_page|add:pages_around %}
+          <li class="page-item{% if i == current_page %} active{% endif %}">
+            <a
+              class="page-link"
+              hx-target="#data-table-content"
+              {% hx_swap push_url=True %}
+              hx-get="{% qs page_query_param %}&{{page_query_param}}={{i}}&partials=list_content,pagination"
+            >{{i}}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <li class="page-item active">
+        <a class="page-link" href="#">...</a>
+      </li>
+    {% endif %}
+    {% if next %}
+      <li class="page-item">
+        <a 
+          class="page-link" 
+          hx-target="#data-table-content"
+          {% hx_swap push_url=True %}
+          hx-get="{{next}}&partials=list_content,pagination"
+        >Next</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
