@@ -63,12 +63,13 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     ...
 ]
+```
 
-# Getting started
+## Getting started
 
-## Create an endpoint for your model
+### Create an endpoint for your model
 
-In side `&lt;your_app&gt;/endpoints.py` create an endpoint:
+Inside `<your_app>/endpoints.py` create an endpoint:
 
 ```python
 from drf_auto_endpoint.endpoints import Endpoint
