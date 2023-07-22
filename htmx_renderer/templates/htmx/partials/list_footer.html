@@ -3,7 +3,12 @@
 <tfoot id="data-table-footer" {% hx_attrs %} class="fade-me-out fade-me-in">
   <tr>
     <td colspan={% if meta.list_display|length > 3%}2{% else %}20{% endif %}>
-      <small>{{count}} record(s) found</small>
+        <small>{{count}} record(s) found</small> &nbsp;
+        <a href="{% url 'api-root' %}{{view.basename}}/new/" margin-right="0">
+            <button type="button" class="btn btn-outline-primary">
+                <i class="fa-solid fa-plus"></i>Add
+            </button>
+        </a>
     </td>
     {% if meta.list_display|length <= 3 %}
   </tr>

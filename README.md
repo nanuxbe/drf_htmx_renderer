@@ -112,3 +112,19 @@ To install package in development mode you can use
 
     pip install -e .
 
+## Development
+
+
+### Sample (demo) app
+
+One way to start the development is to run our demo app
+and explore examples.
+Source code is available in `sample` subdirectory.
+
+#### Create migrations
+
+    python manage.py migrate
+
+#### Start development server
+
+    python manage.py runserver
