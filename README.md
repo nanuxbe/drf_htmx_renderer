@@ -86,3 +86,16 @@ class MyModelEndpoint(Endpoint):
 Restart Django's development serve and point it to http://localhost:8000/api/v1/
 
 For further customization of your endpoint, refer to [DRF-Schema-Adapter's documentation](https://drf-schema-adapter.readthedocs.io/en/latest/drf_auto_endpoint/endpoint/)
+
+## Building
+
+This project uses standardized `pyproject.toml` for the package. To build it simply invoke
+
+    python -m build
+
+(note, you may need to install `build` package first).
+
+To install package in development mode you can use
+
+    pip install -e .
+
