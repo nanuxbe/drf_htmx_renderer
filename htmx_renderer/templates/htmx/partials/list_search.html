@@ -1,0 +1,18 @@
+{% load htmx_renderer_tags %}
+
+{% if meta.search_enabled %}
+  <small class="col text-end input-group" id="list-search-box" {% hx_attrs %}>
+    <span class="input-group-text"><i class="fa fa-search"></i></span>
+    <input
+          type="text"
+          name="search"
+          class="form-control"
+          placeholder="Search..."
+          hx-trigger="keyup changed delay:500ms"
+          hx-get="{% qs 'search' page_query_param %}&partials=list_content,list_header,list_footer"
+          hx-target="#data-table-content"
+          value="{{ request.GET.search }}"
+          {% hx_swap push_url=True %}
+    />
+  </small>
+{% endif %}

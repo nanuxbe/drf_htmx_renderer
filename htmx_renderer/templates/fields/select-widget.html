@@ -16,7 +16,7 @@
     name="{{field_name}}"
     class="form-select"
     hx-trigger="change"
-    hx-get="{% qs field_name %}&partials=list_content,list_footer"
+    hx-get="{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
     hx-target="#data-table-content"
     {% hx_swap push_url=is_filter %}
   >

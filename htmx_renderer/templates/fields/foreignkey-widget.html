@@ -6,10 +6,10 @@
 
 {% block edit_value %}
   <select
-    name="{{field_name}}"
+    name="{{ rel|default_if_none:field_name }}"
     class="form-select"
     hx-trigger="change"
-    hx-get="{% qs rel %}&partials=list_content,list_footer"
+    hx-get="{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
     hx-target="#data-table-content"
     {% hx_swap push_url=is_filter %}
   >

@@ -6,26 +6,26 @@
       {% with field=meta.fields|field_by_name:field_name %}
         <th>
           {{field.label|title}}
-          {%if field_name in meta.ordering_fields %}
+          {% if field_name in meta.ordering_fields %}
             &nbsp;
             {% if field_name == current_ordering %}
               <a 
                 hx-trigger="click"
-                hx-get="{% qs 'ordering' page_query_param %}&ordering=-{{field_name}}&partials=list_content,list_header,pagination"
+                hx-get="{% qs 'ordering' page_query_param %}&ordering=-{{field_name}}&partials=list_content,list_search,list_header,pagination"
                 hx-target="#data-table-content"
                 {% hx_swap push_url=True %}
               ><i class="fa fa-sort-up"></i></a>
             {% elif '-'|add:field_name == current_ordering %}
               <a 
                 hx-trigger="click"
-                hx-get="{% qs 'ordering' page_query_param %}&ordering={{field_name}}&partials=list_content,list_header,pagination"
+                hx-get="{% qs 'ordering' page_query_param %}&ordering={{field_name}}&partials=list_content,list_search,list_header,pagination"
                 hx-target="#data-table-content"
                 {% hx_swap push_url=True %}
               ><i class="fa fa-sort-down"></i></a>
             {% else %}
               <a 
                 hx-trigger="click"
-                hx-get="{% qs 'ordering' page_query_param %}&ordering={{field_name}}&partials=list_content,list_header,pagination"
+                hx-get="{% qs 'ordering' page_query_param %}&ordering={{field_name}}&partials=list_content,list_search,list_header,pagination"
                 hx-target="#data-table-content"
                 {% hx_swap push_url=True %}
               ><i class="fa fa-sort"></i></a>
