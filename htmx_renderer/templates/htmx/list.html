@@ -1,7 +1,7 @@
 {% load htmx_renderer_tags %}
 
 {% if request.headers|get:'HX-Request' %}
-  {% include 'htmx/partials/navigation.html' %}
+  {% include_htmx_partial 'navigation' %}
   <div id="error_container" hx-swap-oob="true"></div>
 {% endif %}
 

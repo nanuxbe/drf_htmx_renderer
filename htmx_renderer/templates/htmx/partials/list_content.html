@@ -2,7 +2,7 @@
 
 <tbody id="data-table-content" {% hx_attrs %} class="fade-me-out fade-me-in">
   {% for record in results %}
-    {% include './list_line.html' %}
+    {% include_htmx_partial 'list_line' %}
   {% endfor %}
 </tbody>
 
