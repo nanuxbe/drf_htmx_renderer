@@ -38,7 +38,6 @@ def get(record, field_name):
     try:
         return record.get(field_name)
     except AttributeError:
-        print(type(record))
         return ''
 
 
@@ -63,16 +62,12 @@ def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
     else:
         raise Exception('please provide a field name')
 
-    print(field_name)
-
     context['field'] = _field_by_name(context['meta']['fields'], field_name)
 
     if 'metadata' in context:
         context['field'].update(context['metadata'])
     if 'metadata' in kwargs:
         context['field'].update(kwargs['metadata'])
-
-    print(context['field'])
 
     try:
         template_name = f'fields/{context["field"]["widget"]}-widget.html'
@@ -172,11 +167,29 @@ def include_htmx_partial(context, template_name):
         f'htmx/partials/{template_name}.html',
         None,
     ]
-    if 'model' in context.get('meta', {}):
-        candidates.insert(0, f'htmx/partials/{context["meta"]["model"]}_{template_name}.html')
-        if 'app' in context.get('meta', {}):
-            candidates.insert(0, f'htmx/partials/{context["meta"]["app"]}_{context["meta"]["model"]}_{template_name}.html'),
 
+    try:
+        path, filename = template_name.rsplit('/', 1)
+    except ValueError:
+        path = None
+        filename = template_name
+
+    if 'model' in context.get('meta', {}):
+        candidates.insert(0, 'htmx/partials/{}{}_{}.html'.format(
+            f'{path}/' if path is not None else '',
+            context["meta"]["model"],
+            filename
+        ))
+        if 'app' in context.get('meta', {}):
+            app = context["meta"]["app"].rsplit('.', 1)[0]
+            candidates.insert(0, 'htmx/partials/{}{}_{}_{}.html'.format(
+                f'{path}/' if path is not None else '',
+                app,
+                context["meta"]["model"],
+                filename
+            ))
+
+    print('---- PARTIAL CANDIDATES ---', candidates)
     while (template := candidates.pop(0)) is not None:
         try:
             get_template(template)
@@ -186,4 +199,3 @@ def include_htmx_partial(context, template_name):
             pass
 
     raise TemplateDoesNotExist(template_name)
-
