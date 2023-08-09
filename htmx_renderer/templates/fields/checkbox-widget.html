@@ -30,6 +30,13 @@
         type="checkbox"
         name="{{field_name}}"
         {% if record|get:field_name %}checked{% endif %}
+        hx-trigger="change"
+        hx-patch="./{{record.id}}/{% qs %}&partials=single_line"
+        hx-target="#data-table-record-{{record.id}}"
+        {% hx_swap %}
+        {% if record|get:field_name %}
+          hx-vals='{"{{field_name}}": "off"}'
+        {% endif %}
       />
     </div>
   {% endif %}
