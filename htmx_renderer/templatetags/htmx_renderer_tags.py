@@ -154,15 +154,14 @@ def comp_id(active_filter, value):
 
 
 @register.inclusion_tag('htmx/include.html', takes_context=True)
-def include_with_context_as_record(context, path):
+def include_with_context_as_record(context, template_name):
     context['record'] = context
-    context['path'] = path
+    # context['path'] = path
     context['htmx'] = True
-    return context
+    return _render_partial_template(context, template_name)
 
 
-@register.inclusion_tag('htmx/include.html', takes_context=True)
-def include_htmx_partial(context, template_name):
+def _render_partial_template(context, template_name):
     candidates = [
         f'htmx/partials/{template_name}.html',
         None,
@@ -199,3 +198,7 @@ def include_htmx_partial(context, template_name):
             pass
 
     raise TemplateDoesNotExist(template_name)
+
+@register.inclusion_tag('htmx/include.html', takes_context=True)
+def include_htmx_partial(context, template_name):
+    return _render_partial_template(context, template_name)
