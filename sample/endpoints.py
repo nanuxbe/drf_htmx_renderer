@@ -1,13 +1,16 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
-from drf_auto_endpoint.decorators import custom_action
+from drf_auto_endpoint.decorators import custom_action, bulk_action
 from drf_auto_endpoint.endpoints import Endpoint
 from drf_auto_endpoint.router import register
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from .models import Category, Product, Project
+from .models import Category, Product, Project, Todo
 
 
 @register
@@ -48,3 +51,26 @@ class ProjectEndpoint(Endpoint):
         obj.save()
         data = self.get_serializer(obj).data
         return Response(data)
+
+
+@register
+class TodoEndpoint(Endpoint):
+    model = Todo
+    list_display = ('is_done', 'description')
+    list_editable = ('is_done', )
+    filter_fields = ('is_done', )
+
+    @bulk_action(method='DELETE')
+    def clear(self, request):
+        Todo.objects.filter(is_done=True).delete()
+
+        qs = Todo.objects.all()
+        serializer = self.get_serializer()(qs, many=True)
+        response = Response({'results': serializer.data})
+        response['HX-Location'] = json.dumps({
+            "path": reverse('sample/todos-list'),
+            "target": "#main",
+            "swap": "outerHTML",
+        })
+
+        return response

@@ -1,0 +1,19 @@
+{% load htmx_renderer_tags %}
+
+<thead id="data-table-header" {% hx_attrs %} class="fade-me-out fade-me-in" class="header"> 
+  <tr>
+    <th colspan="2">
+      <input 
+        type="text" 
+        name="description"
+        hx-trigger="keyup[keyCode==13]"
+        hx-post="{% qs %}&partials=../list"
+        hx-target="#records-list"
+        placeholder="What needs to be done?"
+        class="new-todo"
+      />
+    </th>
+    <th>&nbsp;</th>
+  </tr>
+</thead>
+
