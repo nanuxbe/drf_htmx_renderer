@@ -1,3 +1,4 @@
+{% load htmx_renderer_tags %}
 {% for template, params in templates.items %}
-  {% include template %}
+  {% include_htmx_partial template %}
 {% endfor %}
