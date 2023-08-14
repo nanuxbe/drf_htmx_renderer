@@ -95,7 +95,7 @@ class TemplateHTMLRenderer(DRFTemplateHTMLRenderer):
             context['active_filters'][field_name] = param_value
 
     def _redirect_on_success(self, request, view, response):
-        print('SUCCESS')
+        # print('SUCCESS')
         if not hasattr(view, 'action'):
             return
 
@@ -133,7 +133,7 @@ class TemplateHTMLRenderer(DRFTemplateHTMLRenderer):
         self._redirect_on_success(request, view, response)
 
         partials = request.GET.get('partials', '').split(',')
-        context['templates'] = {f'./partials/{p}.html': {'oob': bool(i)}
+        context['templates'] = {p: {'oob': bool(i)}
                                 for i, p in enumerate(partials)}
 
         return context

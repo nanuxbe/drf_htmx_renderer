@@ -1,19 +1,19 @@
 {% load htmx_renderer_tags %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/todo-mvc.css' %}">
 
 {% if request.headers|get:'HX-Request' %}
   {% include_htmx_partial 'navigation' %}
   <div id="error_container" hx-swap-oob="true"></div>
 {% endif %}
 
-<div id="main">
-  <h2 class="row">
-    <span class="col">
-      {{meta.name}}
-    </span>
-      {% include_htmx_partial "list_search" %}
-  </h2>
+<div id="main" class="todoapp">
+  <h1>
+    todos
+  </h1>
 
-  <table class="table table-striped" id="records-list">
+  <table class="table" id="records-list">
     {% include_htmx_partial "list_header" %}
     {% include_htmx_partial "list_content" %}
     {% include_htmx_partial "list_footer" %}

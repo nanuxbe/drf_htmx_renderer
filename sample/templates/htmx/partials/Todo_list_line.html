@@ -1,0 +1,19 @@
+{%load htmx_renderer_tags%}
+
+<tr id="data-table-record-{{record.id}}" class="{%if record.is_done %}completed{%endif%}">
+  {%for field_name in meta.list_display %}
+  <td class="{{field_name}}">{%include_field_widget %}</td>
+  {% endfor %}
+  <td class="destroy">
+    <a
+      class="btn text-danger"
+      hx-delete="{% url view.basename|add:'-detail' record.id %}?{% qs %}"
+      hx-target="#main"
+      {% hx_swap push_url=False %}
+      title="Clear"
+    >
+      <i class="fa fa-times"></i>
+    </a>
+  </td>
+</tr>
+
