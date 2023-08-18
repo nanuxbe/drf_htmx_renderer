@@ -1,0 +1,7 @@
+{% extends "fields/_default-widget.html" %}
+{% block edit_value %}
+  {% with "datetime-local" as type %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+

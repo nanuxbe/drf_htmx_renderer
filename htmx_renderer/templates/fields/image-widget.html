@@ -1,0 +1,6 @@
+{% extends "fields/_default-widget.html" %}
+{% block edit_value %}
+  {% with "file" as type %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
