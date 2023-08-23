@@ -5,7 +5,7 @@
   <form hx-put="?partials=form" hx-swap="none">
     {% csrf_token %}
     {% for metadata in meta.fieldsets %}
-      {% include_with_context_as_record 'fields/fieldset-widget.html' %}
+      {% include_with_context_as_record '../../fields/fieldset-widget' %}
     {% endfor %}
     <input type="submit" value="Update" />
   </form>
@@ -13,7 +13,7 @@
   <form hx-post="../" hx-target="#content" hx-swap="none">
     {% csrf_token %}
     {% for metadata in meta.fieldsets %}
-      {% include_with_context_as_record 'fields/fieldset-widget.html' %}
+      {% include_with_context_as_record '../../fields/fieldset-widget' %}
     {% endfor %}
     <input type="submit" value="Create" />
   </form>
