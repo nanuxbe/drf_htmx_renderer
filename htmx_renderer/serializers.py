@@ -23,5 +23,5 @@ class HTMXModelSerializer(ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         self.serializer_related_field = CompoundRelatedField
-        print(self.serializer_related_field)
+        # print(self.serializer_related_field)
         super().__init__(*args, **kwargs)

@@ -5,9 +5,9 @@ from rest_framework.views import exception_handler
 
 def render_html_errors(exc, context):
     if isinstance(exc, ValidationError):
-        print('----')
-        print(exc.detail, exc.get_full_details())
-        print(context)
+        # print('----')
+        # print(exc.detail, exc.get_full_details())
+        # print(context)
 
         context['errors'] = exc.detail
 

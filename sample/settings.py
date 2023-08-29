@@ -71,7 +71,7 @@ if DEBUG:
         MIDDLEWARE = [
             'debug_toolbar.middleware.DebugToolbarMiddleware',
         ] + MIDDLEWARE
-        INTERNAL_IPS = ['127.0.0.1', '192.168.0.0/16', '172.0.0.0/8', '10.0.0.0/8']
+        INTERNAL_IPS = ['127.0.0.1'] + [f'192.168.2.{ip}' for ip in range(1, 255)]
     except ImportError:
         # Debug toolbar not installed
         pass

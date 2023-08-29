@@ -199,6 +199,16 @@ def _render_partial_template(context, template_name):
 
     raise TemplateDoesNotExist(template_name)
 
+
 @register.inclusion_tag('htmx/include.html', takes_context=True)
 def include_htmx_partial(context, template_name):
     return _render_partial_template(context, template_name)
+
+
+@register.filter
+def in_m2m_value(id, value):
+    if value in ('', None, []):
+        return False
+    rv = str(id) in [str(x['pk']) for x in value]
+    print(id, value, rv)
+    return rv

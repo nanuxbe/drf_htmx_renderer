@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -49,3 +50,37 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class Feeling(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+class Care(models.Model):
+    habits = models.CharField(max_length=30)
+    enough = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.habits
+
+
+class Moodtracker(models.Model):
+    MOOD = (
+        ("VG", "Very Good"),
+        ("G", "Good"),
+        ("N", "Neutral"),
+        ("B", "Bad"),
+        ("VB", "Very Bad"),
+    )
+
+    date = models.DateField(default=timezone.now, blank=True)
+    mood_am = models.CharField(max_length=30, choices=MOOD, default='Neutral')
+    mood_pm = models.CharField(max_length=30, choices=MOOD, default="Neutral")
+    feelings = models.ManyToManyField(Feeling, blank=True)
+    cares = models.ManyToManyField(Care, blank=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return str(self.date)
