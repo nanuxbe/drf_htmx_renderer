@@ -1,0 +1,14 @@
+{
+  "Moodtracker":[
+    {"name":"date"},
+    {"name":"mood_am"},
+    {"name":"mood_pm"},
+    {"name":"feelings"},
+    {"name":"cares"},
+    {
+      "name":"notes",
+      "widget":"textarea"
+    }
+  ]
+} 
+
