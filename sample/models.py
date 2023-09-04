@@ -46,7 +46,6 @@ class Project(models.Model):
 
 class Todo(models.Model):
     description = models.CharField(max_length=255)
-    is_done = models.BooleanField(default=False)
 
     def __str__(self):
         return self.description
@@ -57,6 +56,7 @@ class Feeling(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Care(models.Model):
     habits = models.CharField(max_length=30)
@@ -80,6 +80,8 @@ class Moodtracker(models.Model):
     mood_pm = models.CharField(max_length=30, choices=MOOD, default="Neutral")
     feelings = models.ManyToManyField(Feeling, blank=True)
     cares = models.ManyToManyField(Care, blank=True)
+    what_worked = models.TextField(blank=True)
+    what_didnt_work = models.TextField(blank=True)
     notes = models.TextField(blank=True)
 
     def __str__(self):

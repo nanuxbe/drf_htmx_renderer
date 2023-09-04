@@ -8,7 +8,16 @@
     {
       "name":"notes",
       "widget":"textarea"
+    },
+    {
+      "name":"what_worked",
+      "widget":"textarea"
+    },
+    {
+      "name":"what_didnt_work",
+      "widget":"textarea"
     }
+
   ]
 } 
 
