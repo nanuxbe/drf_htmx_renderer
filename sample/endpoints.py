@@ -10,7 +10,7 @@ from drf_auto_endpoint.router import register
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from .models import Care, Category, Feeling, Moodtracker, Product, Project, Todo
+from .models import Care, Category, Enough, Feeling, Moodtracker, Product, Project, Todo
 from .views import DebugViewSet
 
 
@@ -86,12 +86,15 @@ class FeelingEndpoint(Endpoint):
 @register
 class CareEndpoint(Endpoint):
     model = Care
-    list_display = ("habits", "enough")
+    list_display = ("habits",)
 
+@register
+class EnoughEndpoint(Endpoint):
+    model = Enough
+    list_display = ("do",)
 
 @register
 class MoodtrackerEndpoint(Endpoint):
     model = Moodtracker
     base_viewset = DebugViewSet
     list_display = ('date', "mood_am", "mood_pm", "notes")
-
