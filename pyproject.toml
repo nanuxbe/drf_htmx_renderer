@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "drf-htmx-renderer"
-version = "0.0.1"
+version = "0.0.2"
 description = "HTMX renderer for Django REST FRAMEWORK"
 authors = [
     {name = "Emmanuelle Delescolle", email = "info@levit.be"},
