@@ -1,0 +1,17 @@
+{% extends "fields/_default-widget.html" %}
+{%load htmx_renderer_tags%}
+
+{%block edit_value%}
+  <input type="range"
+    value="{%if record|get:field_name%}{{record|get:field_name}}{%else%}0{%endif%}"
+    class="form-range"
+    name="{{field_name}}"
+    {% if field.extra.min %}min="{{field.extra.min}}"{% endif %}
+    max="{% if field.extra.max %}{{field.extra.max}}{% else %}10{% endif %}"
+    step="{% if field.extra.step %}{{ field.extra.step }}{% else %}1{% endif %}"
+    hx-trigger="change"
+    hx-get="{%qs field_name page_query_param%}&partials=list_header, list_content, list_search,list_footer"
+    hx-target="#data-table-content"
+    {%hx_swap%}
+  />
+{%endblock%}

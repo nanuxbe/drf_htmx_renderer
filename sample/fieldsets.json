@@ -1,13 +1,24 @@
 {
   "Moodtracker":[
-    {"name":"date"},
     {"name":"mood_am"},
     {"name":"mood_pm"},
     {"name":"feelings"},
     {"name":"cares"},
     {
-      "name":"notes",
-      "widget":"textarea"
+      "name":"stress",
+      "widget":"range",
+      "extra":{
+        "max":5,
+        "step":1
+      }
+    },
+    {
+      "name":"energy",
+      "widget":"range",
+      "extra": {
+          "max":10,
+          "step":1
+      }
     },
     {
       "name":"what_worked",
@@ -15,9 +26,19 @@
     },
     {
       "name":"what_didnt_work",
-      "widget":"textarea"
+      "widget":"textarea",
+      "extra":{
+        "rows":3
+      }
+    },
+    {"name": "did_enough"},
+    {
+      "name":"notes",
+      "widget":"textarea",
+      "extra": {
+        "rows":2
+      }
     }
-
   ]
 } 
 
