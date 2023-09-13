@@ -1,44 +1,80 @@
 {
   "Moodtracker":[
-    {"name":"mood_am"},
-    {"name":"mood_pm"},
-    {"name":"feelings"},
-    {"name":"cares"},
     {
-      "name":"stress",
-      "widget":"range",
-      "extra":{
-        "max":5,
-        "step":1
-      }
+      "widget":"fieldset",
+      "innerClass": "col-6",
+      "class": "row",
+      "fields":[
+        {
+          "name": "mood_am"
+        },
+        {
+          "name": "feelings"
+        }
+      ]
     },
     {
-      "name":"energy",
-      "widget":"range",
-      "extra": {
-          "max":10,
-          "step":1
-      }
+      "widget":"fieldset",
+      "innerClass":"col-6",
+      "class":"row",
+      "fields":[
+        {
+          "name":"mood_pm"
+        },
+        {
+          "name":"cares"
+        }
+      ]
     },
     {
-      "name":"what_worked",
-      "widget":"textarea"
+      "widget":"fieldset",
+      "innerClass":"col-6",
+      "class":"row",
+      "fields":[
+        {
+          "name":"energy",
+          "widget":"range"
+        },
+        {
+          "name":"did_enough"
+        }
+      ]
     },
     {
-      "name":"what_didnt_work",
-      "widget":"textarea",
-      "extra":{
-        "rows":3
-      }
+      "widget":"fieldset",
+      "innerClass":"col-6",
+      "class":"row",
+      "fields":[
+        {
+          "name":"stress",
+          "widget":"range",
+          "extra":{
+            "max":5
+          }
+        },
+        {
+          "name":"what_worked",
+          "widget":"textarea"
+        }
+      ]
     },
-    {"name": "did_enough"},
     {
-      "name":"notes",
-      "widget":"textarea",
-      "extra": {
-        "rows":2
-      }
+      "widget":"fieldset",
+      "innerClass":"col-6",
+      "class":"row",
+      "fields":[
+        {
+          "name":"notes",
+          "widget":"textarea",
+          "extra":{
+            "rows":2
+          }
+        },
+        {
+          "name":"what_didnt_work",
+          "widget":"textarea" 
+        }
+      ]
     }
   ]
-} 
-
+}
