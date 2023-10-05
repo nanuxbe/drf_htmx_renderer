@@ -64,6 +64,7 @@ class Care(models.Model):
     def __str__(self):
         return self.habits
 
+
 class Enough(models.Model):
     do = models.CharField(max_length=30)
 
@@ -87,13 +88,13 @@ class Moodtracker(models.Model):
     cares = models.ManyToManyField(Care, blank=True)
     stress = models.PositiveIntegerField(default=0,
                                  validators=[
-                                     MaxValueValidator(10),
+                                     MaxValueValidator(5),
                                      MinValueValidator(0)
                                  ])
     energy = models.PositiveIntegerField(default=0,
                                          validators=[
                                              MaxValueValidator(10),
-                                             MinValueValidator(1)
+                                             MinValueValidator(0)
                                          ])
     what_worked = models.TextField(blank=True)
     what_didnt_work = models.TextField(blank=True)

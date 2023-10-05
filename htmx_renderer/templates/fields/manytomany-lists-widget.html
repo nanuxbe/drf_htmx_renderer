@@ -8,6 +8,7 @@
   <select multiple
     name="{{rel|default:field_name}}"
     class="form-select"
+    size="3"
     hx-trigger="change"
     hx-get="{%qs rel|default:field_name page_query_param%}&partials=list_content,list_search,list_header,list_footer"
     hx-target="#data-table-content"

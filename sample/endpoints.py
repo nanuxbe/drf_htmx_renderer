@@ -88,13 +88,17 @@ class CareEndpoint(Endpoint):
     model = Care
     list_display = ("habits",)
 
+
 @register
 class EnoughEndpoint(Endpoint):
     model = Enough
     list_display = ("do",)
 
+
 @register
 class MoodtrackerEndpoint(Endpoint):
     model = Moodtracker
     base_viewset = DebugViewSet
-    list_display = ('date', "mood_am", "mood_pm", "notes")
+    list_display = ("date", "mood_am", "mood_pm", "notes")
+    ordering_fields = ("date",)
+    filter_fields = ("date",)
