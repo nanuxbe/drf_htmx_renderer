@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block edit_value %}
-  <select
+  <!--select
     name="{{ rel|default:field_name }}"
     class="form-select"
     hx-trigger="change"
@@ -19,5 +19,107 @@
         {{label}}
       </option>
     {% endfor %}
-  </select>
+  </select-->
+  <div
+    x-data="{
+      open: false,
+      toggle(){
+        this.open = !this.open;
+      },
+      selected: {%if value %}'{{value.id}}'{% elif is_filter and active_filters|get:rel %}'{{active_filters|get:rel}}'{%else%}null{%endif%},
+      select(value){
+        this.open=false;
+        if (value == this.selected) {
+          return;
+        }
+        if (value != '') {
+          this.selected=value;
+        } else {
+          this.selected=null;
+        }
+        if (document.querySelector('#data-table-content')) {
+          htmx.ajax(
+            'GET',
+            '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=' + value,
+            {
+              target: '#data-table-content',
+              swap: 'outerHTML swap:.3s',
+                  
+            }
+          ){% if is_filter %}.then(() => {
+            window.history.pushState({}, '', '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=' + value);
+          }){% endif %};
+        }
+      },
+      choices: [
+        {% for id, label in field|select_list %}
+          {key: '{{id}}', label: '{{label}}'},
+        {% endfor %}
+      ],
+      search: '',
+      get filteredChoices() {
+        if (this.search == '') {
+          return this.choices;
+        }
+        return this.choices.filter((item) => {
+          return item.label.toLowerCase().includes(this.search.toLowerCase());
+        });
+      },
+      get selectedLabel() {
+        const filtered = this.choices.filter((item) => { return item.key == this.selected; });
+        if (filtered.length == 0) {
+          return '--';
+        }
+        return filtered[0].label;
+      },
+    }"
+    x-on:keydown.escape.prevent.stop="open=false"
+    x-id="['x-foreignkey']"
+    class="dropdown"
+    :class="{
+      show: open
+    }"
+  >
+    <input type="hidden" x-model="selected" name="{{ rel|default:field_name }}"/>
+    <div
+        @click="toggle()"
+        :aria-expanded="open"
+        role="button"
+        :aria-controls="$id('x-foreignkey')"
+        :aria-owns="$id('x-foreignkey')"
+        class="border border-primary rounded p-1 my-2 dropdown-toggle d-flex justify-content-between align-items-center"
+    >
+      <template x-if="selected">
+        <div class="mx-1 p-1">
+          <span x-text="selectedLabel"></span>
+          <button
+            class="btn btn-sm btn-light"
+            @click.prevent.stop="select('')"
+          >X</button>
+        </div>
+      </template>
+      <template x-if="!selected">
+        <span class="text-muted my-2 ps-2">Please choose a {{field_name}} ...</span>
+      </template>
+    </div>
+    <div
+      x-show="open"
+      @click.outside="open=false"
+      :id="$id('x-foreignkey')"
+      :class="{
+        show: open
+      }"
+      style="padding-top: 0;"
+      class="dropdown-menu"
+    >
+      <input
+        x-model="search"
+        placeholder="Type to search..."
+        class="form-control dropdown-item"
+      />
+      <template x-for="item in filteredChoices" :key="item.key">
+        <a href="#" @click.prevent="select(item.key)" class="dropdown-item" x-text="item.label" :class="{'active': item.key==selected}"></a>
+      </template>
+    </div>
+  </div>
 {% endblock %}

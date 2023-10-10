@@ -39,15 +39,15 @@
   {% if meta.filter_fields|length %}
     <tr>
       {% for field_name in meta.list_display %}
-        <th>
+        <td>
           {% if field_name in meta.filter_fields or field_name|add:'_id' in meta.filter_fields %}
             {% with field=meta.fields|field_by_name:field_name rel=field_name|add:'_id' %}
-              {% include_field_widget is_editable=True is_filter=True %}
+              {% include_field_widget is_editable=True is_filter=True showLabel=False %}
             {% endwith %}
           {% else %}
             &nbsp;
           {% endif %}
-        </th>
+        </td>
       {% endfor %}
     </tr>
   {% endif %}

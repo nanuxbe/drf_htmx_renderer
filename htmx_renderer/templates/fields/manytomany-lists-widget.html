@@ -42,17 +42,19 @@
         } else {
           this.selected.push(value);
         }
-        htmx.ajax(
-          'GET',
-          '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value,
-          {
-            target: '#data-table-content',
-            swap: 'outerHTML swap:.3s',
-                
-          }
-        ){% if is_filter %}.then(() => {
-          window.history.pushState({}, '', '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value);
+        if (document.querySelector('#data-table-content')) {
+          htmx.ajax(
+            'GET',
+            '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value,
+            {
+              target: '#data-table-content',
+              swap: 'outerHTML swap:.3s',
+                  
+            }
+          ){% if is_filter %}.then(() => {
+            window.history.pushState({}, '', '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value);
           }){% endif %};
+        }
       },
       choices: [
         {%for id, label in field|select_list%}
@@ -92,9 +94,7 @@
               <button
                 class="btn btn-sm btn-light"
                 @click.prevent.stop="select(item.key)"
-              >
-                X
-              </button>
+              >X</button>
             </div>
           </template>
         </template>
@@ -118,7 +118,7 @@
       <input
         x-model="search"
         placeholder="Type to search..."
-        class="form-control"
+        class="form-control dropdown-item"
       />
       <template x-for="item in filteredChoices" :key="item.key">
         <li class="dropdown-item">

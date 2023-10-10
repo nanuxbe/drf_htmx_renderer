@@ -22,17 +22,19 @@
       select(value){
         this.selected=value;
         this.open=false;
-        htmx.ajax(
-          'GET',
-          '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value,
-          {
-            target: '#data-table-content',
-            swap: 'outerHTML swap:.3s',
-                
-          }
-        ){% if is_filter %}.then(() => {
-          window.history.pushState({}, '', '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value);
+        if (document.querySelector('#data-table-content')) {
+          htmx.ajax(
+            'GET',
+            '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value,
+            {
+              target: '#data-table-content',
+              swap: 'outerHTML swap:.3s',
+                  
+            }
+          ){% if is_filter %}.then(() => {
+            window.history.pushState({}, '', '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value);
           }){% endif %};
+        }
       },
       choices: [
         {% for choice in field.extra.choices %}
