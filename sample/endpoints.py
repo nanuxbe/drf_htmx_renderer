@@ -20,6 +20,7 @@ class CategoryEndpoint(Endpoint):
     list_display = ('name', )
     search_fields = ('name', )
     ordering_fields = ('name', )
+    page_size = 10
 
 
 @register

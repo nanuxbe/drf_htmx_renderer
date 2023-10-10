@@ -5,74 +5,25 @@
 {% endblock %}
 
 {% block edit_value %}
-  <!--select
-    name="{{ rel|default:field_name }}"
-    class="form-select"
-    hx-trigger="change"
-    hx-get="{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
-    hx-target="#data-table-content"
-    {% hx_swap push_url=is_filter %}
-  >
-    <option value=""></option>
-    {% for id, label in field|select_list %}
-      <option value="{{id}}" {% if id == value.id or is_filter and active_filters|get:rel == id %} selected{% endif %}>
-        {{label}}
-      </option>
-    {% endfor %}
-  </select-->
   <div
-    x-data="{
-      open: false,
-      toggle(){
-        this.open = !this.open;
-      },
-      selected: {%if value %}'{{value.id}}'{% elif is_filter and active_filters|get:rel %}'{{active_filters|get:rel}}'{%else%}null{%endif%},
-      select(value){
-        this.open=false;
-        if (value == this.selected) {
-          return;
-        }
-        if (value != '') {
-          this.selected=value;
-        } else {
-          this.selected=null;
-        }
-        if (document.querySelector('#data-table-content')) {
-          htmx.ajax(
-            'GET',
-            '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=' + value,
-            {
-              target: '#data-table-content',
-              swap: 'outerHTML swap:.3s',
-                  
-            }
-          ){% if is_filter %}.then(() => {
-            window.history.pushState({}, '', '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=' + value);
-          }){% endif %};
-        }
-      },
-      choices: [
-        {% for id, label in field|select_list %}
-          {key: '{{id}}', label: '{{label}}'},
-        {% endfor %}
-      ],
-      search: '',
-      get filteredChoices() {
-        if (this.search == '') {
-          return this.choices;
-        }
-        return this.choices.filter((item) => {
-          return item.label.toLowerCase().includes(this.search.toLowerCase());
-        });
-      },
-      get selectedLabel() {
-        const filtered = this.choices.filter((item) => { return item.key == this.selected; });
-        if (filtered.length == 0) {
-          return '--';
-        }
-        return filtered[0].label;
-      },
-    }"
+    x-data="xForeignKey(
+      '{{field.extra.search|default:"simple"}}', // searchMethod
+      '/api/v1/{{field.extra.related_endpoint.app}}/{{field.extra.related_endpoint.plural}}/?format=json', // baseUrl
+      {%if value %}'{{value.pk}}'{% elif is_filter and active_filters|get:rel %}'{{active_filters|get:rel}}'{%else%}null{%endif%}, // selected
+      '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=', // baseHtmxUrl
+      {% if is_filter %}true{% else %}false{%endif%}, //isFilter
+      [
+        {% if field.extra.search != 'backend' %}
+          {% for id, label in field|select_list %}
+            {key: '{{id}}', label: '{{label}}'},
+          {% endfor %}
+        {% elif value %}
+          {key: '{{value.pk}}', label: '{{value|get:"__str__"}}'},
+        {% elif is_filter and active_filters|get:rel %}
+          {key: '{{active_filters|get:rel}}', label: 'N/A'},
+        {%endif%}
+      ] // choices
+    )"
     x-on:keydown.escape.prevent.stop="open=false"
     x-id="['x-foreignkey']"
     class="dropdown"
@@ -113,11 +64,11 @@
       class="dropdown-menu"
     >
       <input
-        x-model="search"
+        x-model.debounce.500ms="search"
         placeholder="Type to search..."
         class="form-control dropdown-item"
       />
-      <template x-for="item in filteredChoices" :key="item.key">
+      <template x-for="item in await getFilteredChoices()" :key="item.key">
         <a href="#" @click.prevent="select(item.key)" class="dropdown-item" x-text="item.label" :class="{'active': item.key==selected}"></a>
       </template>
     </div>
