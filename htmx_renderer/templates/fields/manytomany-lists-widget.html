@@ -5,9 +5,9 @@
 {% endblock %}
 
 {%block edit_value %}
-  <select multiple
+  <!--select multiple
     name="{{rel|default:field_name}}"
-    class="form-select"
+    class="form-select select"
     size="3"
     hx-trigger="change"
     hx-get="{%qs rel|default:field_name page_query_param%}&partials=list_content,list_search,list_header,list_footer"
@@ -21,7 +21,122 @@
       {{ label }}
       </option>
     {%endfor%}
-  </select>
+  </select-->
+  <div
+    x-data="{
+      open: false,
+      toggle(){
+        this.open = !this.open;
+      },
+      selected: [
+        {% for selected in value %}
+          '{{selected.pk}}',
+        {% endfor %}
+      ],
+      isSelected(value) {
+        return this.selected.indexOf(value) != -1;
+      },
+      select(value){
+        if (this.isSelected(value)) {
+          this.selected = this.selected.filter((item) => item != value);
+        } else {
+          this.selected.push(value);
+        }
+        htmx.ajax(
+          'GET',
+          '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value,
+          {
+            target: '#data-table-content',
+            swap: 'outerHTML swap:.3s',
+                
+          }
+        ){% if is_filter %}.then(() => {
+          window.history.pushState({}, '', '{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=' + value);
+          }){% endif %};
+      },
+      choices: [
+        {%for id, label in field|select_list%}
+          {key: '{{id}}', label: '{{label}}'},
+        {%endfor%}
+      ],
+      search: '',
+      get filteredChoices() {
+        if (this.search == '') {
+          return this.choices;
+        }
+        return this.choices.filter((item) => {
+          return item.label.toLowerCase().includes(this.search.toLowerCase());
+        });
+      },
+    }"
+    x-on:keydown.escape.prevent.stop="open=false"
+    x-id="['x-manytomany-list']"
+    class="dropdown"
+    :class="{
+      show: open
+    }"
+  >
+    <div
+      @click="toggle()"
+      :aria-expanded="open"
+      role="button"
+      :aria-controls="$id('x-manytomany-list')"
+      :aria-owns="$id('x-manytomany-list')"
+      class="border border-primary rounded p-1 my-2 dropdown-toggle d-flex  align-items-center justify-content-between"
+    >
+      <div class="d-flex">
+        <template x-for="item in choices" :key="item.key">
+          <template x-if="isSelected(item.key)">
+            <div class="border bg-light rounded mx-1 p-1">
+              <span x-text="item.label"></span>
+              <button
+                class="btn btn-sm btn-light"
+                @click.prevent.stop="select(item.key)"
+              >
+                X
+              </button>
+            </div>
+          </template>
+        </template>
+        <template x-if="selected.length == 0">
+          <span class="text-muted my-2 ps-2">
+            Choose {{field_name}} ...
+          </span>
+        </template>
+      </div>
+    </div>
+    <div
+      x-show="open"
+      @click.outside="open=false"
+      :id="$id('x-manytomany-list')"
+      :class="{
+        show: open
+      }"
+      style="padding-top: 0;"
+      class="dropdown-menu"
+    >
+      <input
+        x-model="search"
+        placeholder="Type to search..."
+        class="form-control"
+      />
+      <template x-for="item in filteredChoices" :key="item.key">
+        <li class="dropdown-item">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :value="item.key"
+              name="{{field_name}}"
+              :id="'{{field_name}}_' + item.key" @change="select(item.key)"
+              :checked="isSelected(item.key)"
+            />
+            <label class="form-check-label" :for="'{{field_name}}_' + item.key" x-text="item.label" />
+          </div>
+        </li>
+      </template>
+    </div>
+  </div>
 {%endblock%}
 
 
