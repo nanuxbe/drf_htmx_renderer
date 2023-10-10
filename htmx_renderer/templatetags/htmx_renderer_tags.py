@@ -80,11 +80,16 @@ def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
         metadata = {}
 
     print('metadata', metadata)
+    orig_extra = metadata.pop('extra', {})
 
     if 'field' in kwargs:
         metadata.update(kwargs['field'])
     elif 'field' in context:
         metadata.update(deepcopy(context['field']))
+
+    extra = metadata.get('extra', {})
+    orig_extra.update(extra)
+    metadata['extra'] = orig_extra
 
     print('-')
 
