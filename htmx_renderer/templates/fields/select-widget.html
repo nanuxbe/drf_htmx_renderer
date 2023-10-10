@@ -12,21 +12,76 @@
 {% endblock %}
 
 {% block edit_value %}
-  <select
-    name="{{field_name}}"
-    class="form-select"
-    hx-trigger="change"
-    hx-get="{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
-    hx-target="#data-table-content"
-    {% hx_swap push_url=is_filter %}
+  <div
+    x-data="{
+      open: false,
+      toggle(){
+        this.open = !this.open;
+      },
+      selected: {%if value%}'{{value}}'{%else%}null{%endif%},
+      select(value){
+        this.selected=value;
+        this.open=false;
+      },
+      choices: [
+        {% for choice in field.extra.choices %}
+          {key: '{{choice.value}}', label: '{{choice.label}}'},
+        {% endfor %}
+      ],
+      search: '',
+      get filteredChoices() {
+        if (this.search == '') {
+          return this.choices;
+        }
+        return this.choices.filter((item) => {
+          return item.label.toLowerCase().includes(this.search.toLowerCase());
+        });
+      },
+      get selectedLabel() {
+        const filtered = this.choices.filter((item) => { return item.key == this.selected; });
+        if (filtered.length == 0) {
+          return '--';
+        }
+        return filtered[0].label;
+      },
+    }"
+    x-on:keydown.escape.prevent.stop="open=false"
+    x-id="['dropdown-button']"
+    class="dropdown"
+    :class="{
+      show: open
+    }"
   >
-    {% with value=record|get:field_name %}
-      <option value=""></option>
-      {% for choice in field.extra.choices %}
-        <option value="{{choice.value}}"{% if choice.value == value or is_filter and active_filters|get:field_name == choice.value %} selected{% endif %}>
-          {{choice.label}}
-        </option>
-      {% endfor %}
-    {% endwith %}
-  </select>
+    <input type="hidden" x-model="selected" name="{{field_name}}"/>
+    <button
+        @click.prevent="toggle()"
+        :aria-expanded="open"
+        type="button"
+        x-text="selected ? selectedLabel : 'Please choose a {{field.label}}'"
+        :aria-controls="$id('dropdown-button')"
+        class="btn btn-secondary dropdown-toggle"
+    >
+    </button>
+    <div
+      x-show="open"
+      @click.outside="open=false"
+      :id="$id('dropdown-button')"
+      :class="{
+        show: open
+      }"
+      style="padding-top: 0;"
+      class="dropdown-menu"
+    >
+      <input
+        x-model="search"
+        placeholder="Type to search..."
+        class="form-control"
+      />
+      <template x-for="item in filteredChoices" :key="item.key">
+        <li class="dropdown-item">
+          <a href="#" @click.prevent="select(item.key)" class="dropdown-item" x-text="item.label"></a>
+        </li>
+      </template>
+    </div>
+  </div>
 {% endblock %}
