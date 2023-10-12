@@ -70,5 +70,98 @@ document.addEventListener('alpine:init', () => {
         });
       }
     },
-  }))
+  }));
+  Alpine.data('xManytomany', (searchMethod, selected, baseUrl, baseHtmxUrl, isFilter, choices, initialChoicesLength) => ({
+    searchMethod,
+    selected,
+    baseUrl,
+    baseHtmxUrl,
+    isFilter,
+    choices,
+    initialChoicesLength,
+    resultsCount: 0,
+    lastPage: 0,
+    open: false,
+    toggle(){
+      this.open = !this.open;
+      console.log(this.open, this.searchMethod == 'backend', this.choices.length, this.initialChoicesLength);
+      if (this.open && this.searchMethod == 'backend' && this.choices.length <= this.initialChoicesLength) {
+        this.fetch().then((data) => {
+          this.mergeChoicesWith(data);
+        });
+      } 
+    },
+    isSelected(value) {
+      return this.selected.indexOf(value) != -1;
+    },
+    select(value){
+      if (this.isSelected(value)) {
+        this.selected = this.selected.filter((item) => item != value);
+      } else {
+          this.selected.push(value);
+      }
+      if (document.querySelector('#data-table-content')) {
+       htmx.ajax(
+         'GET',
+         this.baseHtmxUrl + value,
+        {
+          target: '#data-table-content',
+          swap: 'outerHTML swap:.3s',
+          }
+         ).then(() => {
+           if (this.isFilter) {
+            window.history.pushState({}, 'UrlHtmx' + value);
+           }
+        });
+      }
+    },
+    search: '',
+    async fetch(search=''){
+      let url = `${this.baseUrl}`
+      if (search == '') {
+        url += `&page=${this.lastPage + 1}`;
+      } else {
+        url += `&search=${search}`;
+      }
+      const response = await fetch(url);
+      const results = await response.json();
+      if (search=='' && this.resultsCount == 0) {
+        this.resultsCount =results.count;
+        if (results.next) {
+          let gottenPage = /page=(\d+)/.exec(results.next);
+          if (gottenPage && gottenPage[1] - 1 > this.lastPage) {
+            this.lastPage = gottenPage[1] - 1;
+          }
+        }
+      }
+      return results.results.map((item) => {return { key: '' + item.id, label: item.__str__ }; });
+    },
+    mergeChoicesWith(data) {
+      const knownKeys = this.choices.map((item) => item.key);
+      this.choices = this.choices.concat(data.filter((item) => !knownKeys.includes(item.key)));
+    },
+    async getFilteredChoices() {
+      console.log('searching', this.search)
+      if (this.search == '') {
+         return this.choices;
+      }
+      if (this.searchMethod == 'backend') {
+        const rv = await this.fetch(this.search);
+        this.mergeChoicesWith(rv);
+        return rv
+      } else {
+        return this.choices.filter((item) => {
+          return item.label.toLowerCase.includes(this.search.toLowerCase());
+        });
+      }
+    },
+    get hasMoreResults() {
+      return this.choices.length < this.resultsCount && this.search == '';
+    },
+    loadMore() {
+      this.fetch().then((data) => {
+        this.mergeChoicesWith(data);
+      });
+    },
+  }));
 });

@@ -28,8 +28,11 @@
           "name": "mood_am"
         },
         {
-          "name": "feelings"
+          "name": "feelings",
+          "extra": {
+            "search": "backend"
           }
+        }
       ]
     },
     {
@@ -41,7 +44,10 @@
           "name":"mood_pm"
         },
         {
-          "name":"cares"
+          "name":"cares",
+          "extra": {
+            "search": "backend"
+          }
         }
       ]
     },
@@ -55,8 +61,11 @@
           "widget":"range"
         },
         {
-          "name":"did_enough"
+          "name":"did_enough",
+          "extra": {
+            "search": "backend"
           }
+        }
       ]
     },
     {

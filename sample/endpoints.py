@@ -82,18 +82,24 @@ class TodoEndpoint(Endpoint):
 class FeelingEndpoint(Endpoint):
     model = Feeling
     list_display = ("name", )
+    page_size = 10
+    search_fields = ('name', )
 
 
 @register
 class CareEndpoint(Endpoint):
     model = Care
     list_display = ("habits",)
+    page_size = 10
+    search_fields = ('habits', )
 
 
 @register
 class EnoughEndpoint(Endpoint):
     model = Enough
     list_display = ("do",)
+    page_size = 10
+    search_fields = ('do', )
 
 
 @register
