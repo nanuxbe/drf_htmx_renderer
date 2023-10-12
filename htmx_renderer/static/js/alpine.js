@@ -1,17 +1,20 @@
 document.addEventListener('alpine:init', () => {
-  Alpine.data('xForeignKey', (searchMethod, baseUrl, selected, baseHtmxUrl, isFilter, choices) => ({
+  Alpine.data('xForeignKey', (searchMethod, baseUrl, selected, baseHtmxUrl, isFilter, choices, initialChoicesLength) => ({
     searchMethod,
     baseUrl,
     selected,
     baseHtmxUrl,
     isFilter,
     choices,
+    initialChoicesLength,
+    resultsCount: 0,
+    lastPage: 0,
     open: false,
     toggle(){
       this.open = !this.open;
-      if (this.open && this.searchMethod == 'backend' && this.choices.length < 2) {
+      if (this.open && this.searchMethod == 'backend' && this.choices.length <= this.initialChoicesLength) {
         this.fetch().then((data) => {
-          this.choices = this.choices.concat(data.filter((item) => item.key != this.selected));
+          this.mergeChoicesWith(data);
         });
       }
     },
@@ -50,10 +53,28 @@ document.addEventListener('alpine:init', () => {
       return filtered[0].label;
     },
     async fetch(search='') {
-      const url = `${this.baseUrl}&search=${search}`;
+      let url = `${this.baseUrl}`
+      if (search == '') {
+        url += `&page=${this.lastPage + 1}`;
+      } else {
+        url += `&search=${search}`;
+      }
       const response = await fetch(url);
       const results = await response.json();
+      if (search=='' && this.resultsCount == 0) {
+        this.resultsCount = results.count;
+      }
+      if (results.next && search=='') {
+        let gottenPage = /page=(\d+)/.exec(results.next);
+        if (gottenPage && gottenPage[1] -1 > this.lastPage) {
+          this.lastPage = gottenPage[1] -1;
+        }
+      }
       return results.results.map((item) => { return {key: '' + item.id, label: item.__str__}; });
+    },
+    mergeChoicesWith(data){
+      const knownKeys = this.choices.map((item) => item.key);
+      this.choices = this.choices.concat(data.filter((item) => !knownKeys.includes(item.key)));
     },
     async getFilteredChoices() {
       if (this.search == '') {
@@ -62,13 +83,21 @@ document.addEventListener('alpine:init', () => {
       if (this.searchMethod == 'backend') {
         const rv = await this.fetch(this.search);
         const knownKeys = this.choices.map((item) => item.key);
-        this.choices = this.choices.concat(rv.filter((item) => !knownKeys.includes(item.key)));
+        this.mergeChoicesWith(rv);
         return rv;
       } else {
         return this.choices.filter((item) => {
           return item.label.toLowerCase().includes(this.search.toLowerCase());
         });
       }
+    },
+    get hasMoreResults() {
+      return this.choices.length < this.resultsCount && this.search == '';
+    },
+    loadMore() {
+      this.fetch().then((data) => {
+        this.mergeChoicesWith(data);
+      });
     },
   }));
   Alpine.data('xManytomany', (searchMethod, selected, baseUrl, baseHtmxUrl, isFilter, choices, initialChoicesLength) => ({
@@ -110,7 +139,7 @@ document.addEventListener('alpine:init', () => {
           }
          ).then(() => {
            if (this.isFilter) {
-            window.history.pushState({}, 'UrlHtmx' + value);
+            window.history.pushState({},'', this.baseHtmxUrlHtmx + value);
            }
         });
       }
@@ -127,11 +156,11 @@ document.addEventListener('alpine:init', () => {
       const results = await response.json();
       if (search=='' && this.resultsCount == 0) {
         this.resultsCount =results.count;
-        if (results.next) {
-          let gottenPage = /page=(\d+)/.exec(results.next);
-          if (gottenPage && gottenPage[1] - 1 > this.lastPage) {
-            this.lastPage = gottenPage[1] - 1;
-          }
+      }
+      if (results.next && search=='') {
+        let gottenPage = /page=(\d+)/.exec(results.next);
+        if (gottenPage && gottenPage[1] - 1 > this.lastPage) {
+         this.lastPage = gottenPage[1] - 1;
         }
       }
       return results.results.map((item) => {return { key: '' + item.id, label: item.__str__ }; });

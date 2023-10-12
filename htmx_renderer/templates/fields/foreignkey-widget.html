@@ -22,7 +22,8 @@
         {% elif is_filter and active_filters|get:rel %}
           {key: '{{active_filters|get:rel}}', label: 'N/A'},
         {%endif%}
-      ] // choices
+      ], // choices
+      {%if value %}{{value|length}}{% elif is_filter and active_filters|get:rel %}{{active_filters|get:rel|length}}{% else %}0{%endif%} //initialChoicesLength
     )"
     x-on:keydown.escape.prevent.stop="open=false"
     x-id="['x-foreignkey']"
@@ -70,6 +71,9 @@
       />
       <template x-for="item in await getFilteredChoices()" :key="item.key">
         <a href="#" @click.prevent="select(item.key)" class="dropdown-item" x-text="item.label" :class="{'active': item.key==selected}"></a>
+      </template>
+      <template x-if="hasMoreResults">
+        <a @click.prevent.stop="loadMore">Show more...</a>
       </template>
     </div>
   </div>

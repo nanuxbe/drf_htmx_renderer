@@ -41,7 +41,7 @@
           {% endfor %}
         {% endif %} 
       ], // choices
-      {% if value %}{{ value|length }}{% elif is_filster and active_filters|get:rel %}{{active_filters|get:rel|length}}{% else %}0{% endif %} // initialChoicesLength
+      {% if value %}{{ value|length }}{% elif is_filter and active_filters|get:rel %}{{active_filters|get:rel|length}}{% else %}0{% endif %} // initialChoicesLength
     )"
     @keydown.escape.prevent.stop="open=false"
     x-id="['x-manytomany-list']"
