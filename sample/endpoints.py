@@ -10,7 +10,7 @@ from drf_auto_endpoint.router import register
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from .models import Category, Product, Project, Todo
+from .models import Category, Product, Project, Todo, MoodTracker, Feeling, Caring
 
 
 @register
@@ -74,3 +74,24 @@ class TodoEndpoint(Endpoint):
         })
 
         return response
+
+
+@register
+class MoodTrackerEndpoint(Endpoint):
+    model = MoodTracker
+    list_display = ('name', 'description', 'date', 'emote, feels, cares')
+    list_editable = ('name', 'description', 'emote, feels, cares')
+
+
+@register
+class FeelingEndpoint(Endpoint):
+    model = Feeling
+    list_display = ('feels')
+    list_editable = ('feels')
+
+
+@register
+class CareEndpoint(Endpoint):
+    model = Caring
+    list_display = ('cares')
+    list_editable = ('cares')

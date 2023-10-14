@@ -9,7 +9,7 @@
       class="form-control"
       name="{{field_name}}"
       value="{% if is_filter %}{{active_filters|get:field_name}}{% elif record|get:field_name %}{{record|get:field_name}}{% endif %}"
-      type="{{field.widget}}"
+      type="{% if type %}{{type}}{%else%}{{field.widget}}{%endif%}"
       {% if is_filter %}
         hx-trigger="keyup delay:500ms"
         hx-get="{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"

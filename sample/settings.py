@@ -152,6 +152,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DRF_AUTO_METADATA_ADAPTER = 'htmx_renderer.adapters.HTMXEndpointAdapter'
 DRF_AUTO_BASE_SERIALIZER = 'htmx_renderer.serializers.HTMXModelSerializer'
 DRF_AUTO_BASE_VIEWSET = 'htmx_renderer.views.ModelViewSet'
+DRF_AUTO_WIDGET_MAPPING = {
+    'FileField': 'file',
+    'ImageField': 'image',
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
