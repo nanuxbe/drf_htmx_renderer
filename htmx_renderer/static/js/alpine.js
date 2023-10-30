@@ -4,6 +4,8 @@ document.addEventListener('alpine:init', () => {
     baseUrl,
     choices,
     search: '',
+    selectedAvailable: [],
+    selectedChosen: [],
     canLoadMore: true,
     loadMore() {
 
@@ -21,30 +23,28 @@ document.addEventListener('alpine:init', () => {
     get selectedChoices() {
       return this.choices.filter((item) => this.selected.includes(item.key));
     },
-    getListFromSelected(select) {
-      let opt= []
-      for (let i=0, iLen=select.options.length; i<iLen; i++) {
-        if (select.options[i].selected) {
-          opt.push(select.options[i].value);
-          select.options[i].selected = false;
-        }
+    selectFromList(key, list) {
+      if (this[list].indexOf(key) == -1) {
+        this[list].push(key);
+      } else {
+        this[list] = this[list].filter((item) => item != key);
       }
-      return opt;
+    },
+    isSelectedInList(key, list) {
+      return this[list].indexOf(key) != -1;
     },
     select() {
-      let selectedOpts = this.getListFromSelected(this.$refs.selectFrom);
-      selectedOpts.map((option) => {
-        if (!this.selected.includes(option)) {
-          this.selected.push(option);
+      this.selectedAvailable.map((key) => {
+        if (!this.selected.includes(key)) {
+          this.selected.push(key);
         }
       });
+      this.selectedAvailable = [];
     },
     unSelect() {
-      let selectedOpts = this.getListFromSelected(this.$refs.selectTo);
-      this.selected = this.selected.filter((item) => !selectedOpts.includes(item));
-
-    }, 
-    search: '',
+      this.selected = this.selected.filter((item) => !this.selectedChosen.includes(item));
+      this.selectedChosen = [];
+    },
     
   }));
   Alpine.data('xForeignKey', (searchMethod, baseUrl, selected, baseHtmxUrl, isFilter, choices, initialChoicesLength) => ({

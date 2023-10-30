@@ -10,18 +10,30 @@
          {% endfor %}], //choices
       )"
       x-id="['x-manytomany-list']"
-      class="d-flex"
+      class="d-flex m2mlists"
   >
     <template x-for="item in selected" :key="item">
       <input type="hidden" name="{{rel|default:field_name}}" :value="item"/>
     </template>
     <div>
       <span class="d-flex flex-columns">Available {{field_name}}</span>
-      <select multiple x-ref="selectFrom">
-        <template x-for="item in unSelectedChoices">
-          <option :value="item.key" x-text="item.label"></option>
+      <input class="form-control" x-model="search" placeholder="search" />
+      <ul class="list-from">
+        <template x-for="item in getFilteredChoices" :key="item.key">
+          <li>
+            <div class="form-check" >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :value="item.key"
+                :id = "'{{field_name}}_' + item.key" @Change="selectFromList(item.key, 'selectedAvailable')"
+                :checked="isSelectedInList(item.key, 'selectedAvailable')"
+              />
+              <label class="form-check-label" :for="'{{field_name}}_' + item.key"  x-text="item.label"/>
+            </div>
+          <li>
         </template>
-      </select>
+      </ul>
     </div>
     <div class="icons d-flex flex-column">
       <span>&gt;&gt;</span>
@@ -31,11 +43,22 @@
     </div>
     <div>
       <span class="d-flex flex-columns">Chosen {{field_name}}</span>
-      <select multiple x-ref="selectTo">
-        <template x-for="item in selectedChoices">
-          <option :value="item.key" x-text="item.label"></option>
+      <ul>
+        <template x-for="item in selectedChoices" :key="item.key">
+          <li>
+            <div class="form-check" >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :value="item.key"
+                :id = "'{{field_name}}_' + item.key" @Change="selectFromList(item.key, 'selectedChosen')"
+                :checked="isSelectedInList(item.key, 'selectedChosen')"
+              />
+              <label class="form-check-label" :for="'{{field_name}}_' + item.key"  x-text="item.label"/>
+            </div>
+          <li>
         </template>
-      </select>
+      </ul>
     </div>
   </div>
 {% endblock %}

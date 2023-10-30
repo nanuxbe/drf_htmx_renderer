@@ -1,11 +1,41 @@
 @keyframes success-fade {
   from {
-    background: #096; }
+    background: #096; 
+  }
   to {
-    background: #fff; } }
+    background: #fff;
+  }
+}
 
 .flash-success {
-  animation: success-fade 1s ease-in-out 0s; }
+  animation: success-fade 1s ease-in-out 0s;
+}
 
 [hx-target] {
-  cursor: pointer; }
+  cursor: pointer;
+}
+
+.m2mlists input.form-control {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
+.m2mlists ul {
+  border: 1px solid rgba(0,0,0,.125);
+  height: 10rem;
+  overflow-y: auto;
+  list-style: none;
+  border-radius: 4px;
+  padding-inline-start: .5rem;
+}
+
+.m2mlists ul.list-from {
+  height: 7.75rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.m2mlists ul li {
+  padding: 0;
+}
