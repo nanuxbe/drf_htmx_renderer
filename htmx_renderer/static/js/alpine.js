@@ -1,21 +1,65 @@
 document.addEventListener('alpine:init', () => {
-  Alpine.data('xManytomanyLists', (selected, baseUrl, choices) => ({
+  Alpine.data('xManytomanyLists', (searchMethod, selected, baseUrl, choices) => ({
+    searchMethod,
     selected,
     baseUrl,
     choices,
     search: '',
     selectedAvailable: [],
     selectedChosen: [],
-    canLoadMore: true,
-    loadMore() {
-
+    lastPage: 0,
+    resultsCount: -1,
+    get canLoadMore() {
+      return this.search == '' && this.resultsCount > this.choices.length;
     },
-    getFilteredChoices() {
-      const origChoices = this.unSelectedChoices;
-      if (this.search == '') {
-        return origChoices;
+    async fetch(search='') {
+      let url = `${this.baseUrl}`
+      if (search == ''){
+        url += `&page=${this.lastPage +1}`;
+      } else {
+        url += `&search=${search}`;
       }
-      return origChoices.filter((item) => item.label.toLowerCase().includes(this.search.toLowerCase()));
+      const response = await fetch(url);
+      const results = await response.json();
+      if (search=='' && this.resultsCount <= 0) {
+        this.resultsCount = results.count;
+      }
+      if (search == '') {
+        if (results.next)  {
+          let gottenPage = /page=(\d+)/.exec(results.next);
+          if (gottenPage && gottenPage[1] -1 > this.lastPage) {
+            this.lastPage = gottenPage[1] - 1;
+          }
+        } else {
+          this.lastPage = 1;
+        }
+      }
+      return results.results.map((item) => ({key: '' + item.id, label: item.__str__}));
+    },
+    mergeChoicesWith(data) {
+      const knownKeys = this.choices.map((item) => item.key) ;
+      this.choices = this.choices.concat(
+        data.filter((item) => !knownKeys.includes(item.key))
+      );
+    },
+    async fetchAndMerge(search='') {
+      const rv = await this.fetch(search);
+      this.mergeChoicesWith(rv);
+      return this.unSelectedChoices;
+    },
+    async getFilteredChoices() {
+      const origChoices = this.unSelectedChoices;
+      if (this.searchMethod == 'backend') {
+        if (this.resultsCount < 0) {
+          return await this.fetchAndMerge(this.search)
+        }
+        return origChoices;
+      } else {
+        if (this.search == '') {
+          return origChoices;
+        }
+        return origChoices.filter((item) => item.label.toLowerCase().includes(this.search.toLowerCase()));
+      }
     },
     get unSelectedChoices() {
       return this.choices.filter((item) => !this.selected.includes(item.key));

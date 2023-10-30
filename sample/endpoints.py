@@ -82,7 +82,7 @@ class TodoEndpoint(Endpoint):
 class FeelingEndpoint(Endpoint):
     model = Feeling
     list_display = ("name", )
-    page_size = 10
+    page_size = 5
     search_fields = ('name', )
 
 

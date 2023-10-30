@@ -3,11 +3,20 @@
 {% block edit_value %}
   <div
       x-data="xManytomanyLists(
+        '{{field.extra.search|default:"simple"}}', //searchMethod
         [{%for selected in value%}'{{selected.pk}}',{% endfor %}], // selected
         '/api/v1/{{field.extra.related_endpoint.app}}/{{field.extra.related_endpoint.plural}}/?format=json', //baseUrl
-        [{% for id, label in field|select_list %}
-          {key: '{{id}}', label: '{{label}}'},
-         {% endfor %}], //choices
+        [
+          {%if field.extra.search != 'backend'%}
+            {% for id, label in field|select_list %}
+              {key: '{{id}}', label: '{{label}}'},
+            {% endfor %}
+          {% else %}
+            {%for selected in value%}
+              {key: '{{selected.pk}}', label: '{{selected|get:"__str__"}}'},
+            {% endfor %}
+          {% endif %}
+        ] //choices
       )"
       x-id="['x-manytomany-list']"
       class="d-flex m2mlists"
@@ -19,7 +28,7 @@
       <span class="d-flex flex-columns">Available {{field_name}}</span>
       <input class="form-control" x-model="search" placeholder="search" />
       <ul class="list-from">
-        <template x-for="item in getFilteredChoices" :key="item.key">
+        <template x-for="item in await getFilteredChoices()" :key="item.key">
           <li>
             <div class="form-check" >
               <input
@@ -33,6 +42,9 @@
             </div>
           <li>
         </template>
+        <li x-show="canLoadMore">
+          <a @click.prevent="await fetchAndMerge()" href="#">Load more...</a>
+        </li>
       </ul>
     </div>
     <div class="icons d-flex flex-column">
