@@ -35,7 +35,7 @@
           {% for selected in value %}
             {key: '{{selected.pk}}', label: '{{selected|get:"__str__"}}'},
                                                                               {% endfor %}
-        {% elif is_filster and active_filters|get:rel %}
+        {% elif is_filters and active_filters|get:rel %}
           {% for selected in active_filters|get:rel %}
             {key: '{{selected}}', label: 'N/A'},
           {% endfor %}
