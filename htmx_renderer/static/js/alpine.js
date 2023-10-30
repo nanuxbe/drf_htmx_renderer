@@ -1,4 +1,52 @@
 document.addEventListener('alpine:init', () => {
+  Alpine.data('xManytomanyLists', (selected, baseUrl, choices) => ({
+    selected,
+    baseUrl,
+    choices,
+    search: '',
+    canLoadMore: true,
+    loadMore() {
+
+    },
+    getFilteredChoices() {
+      const origChoices = this.unSelectedChoices;
+      if (this.search == '') {
+        return origChoices;
+      }
+      return origChoices.filter((item) => item.label.toLowerCase().includes(this.search.toLowerCase()));
+    },
+    get unSelectedChoices() {
+      return this.choices.filter((item) => !this.selected.includes(item.key));
+    },
+    get selectedChoices() {
+      return this.choices.filter((item) => this.selected.includes(item.key));
+    },
+    getListFromSelected(select) {
+      let opt= []
+      for (let i=0, iLen=select.options.length; i<iLen; i++) {
+        if (select.options[i].selected) {
+          opt.push(select.options[i].value);
+          select.options[i].selected = false;
+        }
+      }
+      return opt;
+    },
+    select() {
+      let selectedOpts = this.getListFromSelected(this.$refs.selectFrom);
+      selectedOpts.map((option) => {
+        if (!this.selected.includes(option)) {
+          this.selected.push(option);
+        }
+      });
+    },
+    unSelect() {
+      let selectedOpts = this.getListFromSelected(this.$refs.selectTo);
+      this.selected = this.selected.filter((item) => !selectedOpts.includes(item));
+
+    }, 
+    search: '',
+    
+  }));
   Alpine.data('xForeignKey', (searchMethod, baseUrl, selected, baseHtmxUrl, isFilter, choices, initialChoicesLength) => ({
     searchMethod,
     baseUrl,
