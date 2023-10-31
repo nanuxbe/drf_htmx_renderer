@@ -9,6 +9,7 @@ document.addEventListener('alpine:init', () => {
     selectedChosen: [],
     lastPage: 0,
     resultsCount: -1,
+    checkedAll: false,
     get canLoadMore() {
       return this.search == '' && this.resultsCount > this.choices.length;
     },
@@ -51,9 +52,14 @@ document.addEventListener('alpine:init', () => {
       const origChoices = this.unSelectedChoices;
       if (this.searchMethod == 'backend') {
         if (this.resultsCount < 0) {
-          return await this.fetchAndMerge(this.search)
+          return this.fetchAndMerge(this.search);
+        } else if (this.search != '') {
+          const rv = await this.fetch(this.search);
+          this.mergeChoicesWith(rv);
+          return rv.filter((item) => !this.selected.includes(item.key));
+        } else {
+          return origChoices;
         }
-        return origChoices;
       } else {
         if (this.search == '') {
           return origChoices;
@@ -87,6 +93,16 @@ document.addEventListener('alpine:init', () => {
     },
     unSelect() {
       this.selected = this.selected.filter((item) => !this.selectedChosen.includes(item));
+      this.selectedChosen = [];
+    },
+    async selectAll() {
+      const toSelect = await this.getFilteredChoices();
+      this.selected = this.selected.concat(toSelect.map((item) => item.key));
+
+      this.selectedAvailable = [];
+    },
+    unSelectAll() {
+      this.selected = [];
       this.selectedChosen = [];
     },
     

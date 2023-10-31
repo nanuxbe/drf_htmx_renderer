@@ -48,10 +48,10 @@
       </ul>
     </div>
     <div class="icons d-flex flex-column">
-      <span>&gt;&gt;</span>
+      <button @click.prevent="await selectAll()">&gt;&gt;</button>
       <button @click.prevent="select">&gt;</button>
       <button @click.prevent="unSelect">&lt;</button>
-      <SPAN>&LT;&LT;</SPAN>
+      <button @click.prevent="unSelectAll">&LT;&LT;</button>
     </div>
     <div>
       <span class="d-flex flex-columns">Chosen {{field_name}}</span>
