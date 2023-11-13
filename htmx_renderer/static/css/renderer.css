@@ -39,3 +39,32 @@
 .m2mlists ul li {
   padding: 0;
 }
+
+.m2mlists .icons {
+  margin-top: 1.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.m2mlists .title {
+  justify-content: center;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #F2F1F1;
+}
+
+.m2mlists button {
+  max-height: 2rem;
+  background-color: #F2F1F1;
+  border-color: #ced4de;
+}
+
+.m2mlists button:hover {
+  background-color: #8C8C8C;
+  border-color: #8C8C8C;
+}
+
+.m2mlists .btn-outline-primary {
+  color: black;
+}
+

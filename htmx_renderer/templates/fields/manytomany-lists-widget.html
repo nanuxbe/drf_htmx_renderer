@@ -25,7 +25,7 @@
       <input type="hidden" name="{{rel|default:field_name}}" :value="item"/>
     </template>
     <div>
-      <span class="d-flex flex-columns">Available {{field_name}}</span>
+      <span class="title d-flex flex-columns">Available {{field_name}}</span>
       <input class="form-control" x-model="search" placeholder="search" />
       <ul class="list-from">
         <template x-for="item in await getFilteredChoices()" :key="item.key">
@@ -47,14 +47,14 @@
         </li>
       </ul>
     </div>
-    <div class="icons d-flex flex-column">
-      <button @click.prevent="await selectAll()">&gt;&gt;</button>
-      <button @click.prevent="select">&gt;</button>
-      <button @click.prevent="unSelect">&lt;</button>
-      <button @click.prevent="unSelectAll">&LT;&LT;</button>
+    <div class="icons btn-group-vertical d-flex flex-column">
+      <button class="btn btn-outline-primary selectall" @click.prevent="await selectAll()" title="unselect all" ><i class="fa-solid fa-backward"></i></button>
+      <button class="btn btn-outline-primary select" @click.prevent="select" title="select"><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="btn btn-outline-primary unselect" @click.prevent="unSelect" title="unselect"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="btn btn-outline-primary unselectall" @click.prevent="unSelectAll" title="select all"><i class="fa-solid fa-forward"></i></button>
     </div>
     <div>
-      <span class="d-flex flex-columns">Chosen {{field_name}}</span>
+      <span class="title d-flex flex-columns">Chosen {{field_name}}</span>
       <ul>
         <template x-for="item in selectedChoices" :key="item.key">
           <li>
