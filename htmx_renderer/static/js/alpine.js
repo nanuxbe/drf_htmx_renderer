@@ -1,4 +1,51 @@
 document.addEventListener('alpine:init', () => {
+  Alpine.data('xDuration', (time) => ({
+    time,
+    
+    get fromValue() {
+      let from = this.time;
+      let days = 0;
+      const days_part = this.time.split(" ");
+      if (days_part.length > 1) {
+        days = parseInt(days_part[0], 10);
+        from = days_part[1];
+      }
+      const time_parts = from.split(":");
+      const hours = parseInt(time_parts[0]) + days * 24;
+      const minutes = parseInt(time_parts[1]);
+
+      return ("" + hours).padStart(2, 0) + ":" + ("" + minutes).padStart(2, 0);
+    },
+    toVal(e) {
+      entered = e.target.value;
+      let hours = 0;
+      let minutes = 0;
+
+      let entered_parts = entered.split(":");
+ 
+      if (entered_parts.length > 2) {
+        entered_parts = entered_parts.slice(-2);
+      }
+
+      if (entered_parts.length == 2) {
+        hours = parseInt(entered_parts[0], 10);
+      }
+      if (isNaN(hours)) {
+        hours = 0;
+      }
+
+      const minutes_part = entered_parts[entered_parts.length - 1];
+      minutes = parseInt(minutes_part, 10);
+      if (isNaN(minutes)) {
+        minutes = 0;
+      }
+
+      hours += Math.floor(minutes / 60);
+      minutes = minutes % 60;
+
+      this.time = ("" + hours).padStart(2, 0) + ":" + ("" + minutes).padStart(2, 0) + ":00";
+    },
+  })),
   Alpine.data('xManytomanyLists', (searchMethod, selected, baseUrl, choices) => ({
     searchMethod,
     selected,

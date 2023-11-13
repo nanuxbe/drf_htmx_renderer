@@ -103,3 +103,11 @@ class Moodtracker(models.Model):
 
     def __str__(self):
         return str(self.date)
+
+
+class Time(models.Model):
+    duration = models.DurationField()
+    name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.name

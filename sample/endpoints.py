@@ -10,7 +10,7 @@ from drf_auto_endpoint.router import register
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from .models import Care, Category, Enough, Feeling, Moodtracker, Product, Project, Todo
+from .models import Care, Category, Enough, Feeling, Moodtracker, Product, Project, Time, Todo
 from .views import DebugViewSet
 
 
@@ -109,3 +109,8 @@ class MoodtrackerEndpoint(Endpoint):
     list_display = ("date", "mood_am", "mood_pm", "notes")
     ordering_fields = ("date",)
     filter_fields = ("date",)
+
+@register
+class TimeEndpoint(Endpoint):
+    model = Time
+    list_display = ("name", "duration",)

@@ -104,5 +104,14 @@
         }
       ]
     }
-  ]
+  ],
+  "Time":[
+    {
+      "name": "name"
+    },
+    {
+      "name": "duration",
+      "widget": "duration"
+    }
+  ] 
 }

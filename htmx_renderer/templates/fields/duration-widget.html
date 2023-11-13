@@ -1,0 +1,28 @@
+{%extends "fields/_default-widget.html"%}
+
+{% block value_only %}
+<div x-data="xDuration(
+    '{{record|get:field_name}}' //time
+  )"
+>
+  {%if record|get:field_name%}
+    <span x-text="fromValue"></span>
+  {% else %}
+    <span>00:00</span>
+  {%endif%}
+</div>
+{% endblock %}
+
+{%block edit_value%}
+<div
+    x-data = "xDuration(
+    '{{record|get:field_name}}' //time
+    )"
+ x-id="['x-duration']"   
+>
+<input type="hidden" name="{{field_name}}" value="{{record|get:field_name}}" x-model="time"/>
+  <div>
+    <input type="text" placeholder="HH:MM" {%if record|get:field_name%}:value="fromValue"{%endif%} @keyup.debounce="toVal" @change="toVal"/>
+  </div>
+</div>
+{%endblock%}
