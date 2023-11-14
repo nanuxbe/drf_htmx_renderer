@@ -1,0 +1,29 @@
+{% extends "fields/_default-widget.html" %}
+
+{% block value_only %}
+  {{record|fk_str:field }}
+{% endblock %}
+
+{%block edit_value %}
+  <select multiple
+    name="{{rel|default:field_name}}"
+    class="form-select"
+    size="3"
+    hx-trigger="change"
+    hx-get="{%qs rel|default:field_name page_query_param%}&partials=list_content,list_search,list_header,list_footer"
+    hx-target="#data-table-content"
+    {%hx_swap push_url=is_filter%}
+  >
+    {%for id, label in field|select_list%}
+      <option value="{{id}}"
+          {%if id|in_m2m_value:value %}selected{%endif%}
+      >
+      {{ label }}
+      </option>
+    {%endfor%}
+  </select>
+{%endblock%}
+
+
+
+

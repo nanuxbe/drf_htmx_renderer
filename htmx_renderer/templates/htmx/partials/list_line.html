@@ -2,7 +2,7 @@
 
 <tr id="data-table-record-{{record.id}}" {% if htmx %}class="flash-success"{% endif %}>
   {% for field_name in meta.list_display %}
-    <td>{% include_field_widget %}</td>
+    <td>{% include_field_widget showLabel=False %}</td>
   {% endfor %}
   {% for action in meta.custom_actions %}
     <td>

@@ -1,9 +1,10 @@
 <fieldset>
-  {% if 'title' in metadata and metadata.title %}
-    <legend>{{metadata.title}}</legend>
+  {% if 'title' in field and field.title %}
+    <legend>{{field.title}}</legend>
   {% endif %}
-  {% for field in metadata.fields %}
-    {{field.name}}
-    {% include_field_widget field_name=field.name metadata=field is_editable=True %}
-  {% endfor %}
+  <div class="{{field.class}}">
+    {% for sub in field.fields %}
+      {% include_field_widget field_name=sub.name field=sub is_editable=True class=field.innerClass %}
+    {% endfor %}
+  </div>
 </fieldset>

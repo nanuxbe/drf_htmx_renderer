@@ -1,26 +1,37 @@
-{% if not is_editable %}
-  {% block value_only %}
-    {{ record|get:field_name }}
-  {% endblock %}
-{% else %}
-  {% block edit_value %}
-    <!-- {{ field|safe }} -->
-    <input
-      class="form-control"
-      name="{{field_name}}"
-      value="{% if is_filter %}{{active_filters|get:field_name}}{% elif record|get:field_name %}{{record|get:field_name}}{% endif %}"
-      type="{{field.widget}}"
-      {% if is_filter %}
-        hx-trigger="keyup delay:500ms"
-        hx-get="{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
-        hx-target="#data-table-content"
-        {% hx_swap push_url=True %}
-      {% elif is_editable %}
-        hx-trigger="keyup[keyCode==13]"
-        hx-patch="./{{record.id}}/{% qs %}&partials=single_line"
-        hx-target="#data-table-record-{{record.id}}"
-        {% hx_swap %}
-      {% endif %}
-   />
-  {% endblock %}
-{% endif %}
+<div class="{{field.class}}">
+  {% if field.showLabel %}
+    {% if field.label %}
+      <label class="form-label {{field.horiClass}}">
+        {{field.label}}
+      </label>
+    {% endif %}
+  {% endif %}
+  {% if not is_editable %}
+    {% block value_only %}
+      {{ record|get:field_name }}
+    {% endblock %}
+  {% else %}
+    {% with value=record|get:field_name %}
+      {% block edit_value %}
+        <!-- {{ field|safe }} -->
+        <input
+          class="form-control {{field.inputClass}}"
+          name="{{field_name}}"
+          value="{% if is_filter %}{{active_filters|get:field_name}}{% elif record|get:field_name %}{{record|get:field_name}}{% endif %}"
+          type="{{field.widget}}"
+          {% if is_filter %}
+            hx-trigger="keyup delay:500ms"
+            hx-get="{% qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
+            hx-target="#data-table-content"
+            {% hx_swap push_url=True %}
+          {% elif is_editable %}
+            hx-trigger="keyup[keyCode==13]"
+            hx-patch="./{{record.id}}/{% qs %}&partials=single_line"
+            hx-target="#data-table-record-{{record.id}}"
+            {% hx_swap %}
+          {% endif %}
+      />
+      {% endblock %}
+    {% endwith %}
+  {% endif %}
+</div>

@@ -6,7 +6,7 @@
 
 {% block edit_value %}
   <select
-    name="{{ rel|default_if_none:field_name }}"
+    name="{{ rel|default:field_name }}"
     class="form-select"
     hx-trigger="change"
     hx-get="{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"

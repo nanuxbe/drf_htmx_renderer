@@ -1,0 +1,15 @@
+{% extends "fields/_default-widget.html" %}
+{% load htmx_renderer_tags %}
+
+{%block edit_value%}
+  <textarea 
+    rows="{%if field.extra.rows%}{{field.extra.rows}}{%else%}4{%endif%}" 
+    name="{{field_name}}"
+    class="form-control"
+    hx-trigger="change"
+    hx-get="{%qs field_name page_query_param%}&partials=list_content,list_header,list_footer, list_search"
+    hx-target="#data-table-content"
+    {%hx_swap push_url=is_filter%}
+  >{%if record|get:field_name%}{{record|get:field_name}}{%else%}{%endif%} 
+  </textarea>
+{%endblock%}
