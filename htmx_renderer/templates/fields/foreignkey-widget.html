@@ -5,19 +5,76 @@
 {% endblock %}
 
 {% block edit_value %}
-  <select
-    name="{{ rel|default:field_name }}"
-    class="form-select"
-    hx-trigger="change"
-    hx-get="{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer"
-    hx-target="#data-table-content"
-    {% hx_swap push_url=is_filter %}
+  <div
+    x-data="xForeignKey(
+      '{{field.extra.search|default:"simple"}}', // searchMethod
+      '/api/v1/{{field.extra.related_endpoint.app}}/{{field.extra.related_endpoint.plural}}/?format=json', // baseUrl
+      {%if value %}'{{value.pk}}'{% elif is_filter and active_filters|get:rel %}'{{active_filters|get:rel}}'{%else%}null{%endif%}, // selected
+      '{% qs rel|default:field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{rel|default:field_name}}=', // baseHtmxUrl
+      {% if is_filter %}true{% else %}false{%endif%}, //isFilter
+      [
+        {% if field.extra.search != 'backend' %}
+          {% for id, label in field|select_list %}
+            {key: '{{id}}', label: '{{label}}'},
+          {% endfor %}
+        {% elif value %}
+          {key: '{{value.pk}}', label: '{{value|get:"__str__"}}'},
+        {% elif is_filter and active_filters|get:rel %}
+          {key: '{{active_filters|get:rel}}', label: 'N/A'},
+        {%endif%}
+      ], // choices
+      {%if value %}{{value|length}}{% elif is_filter and active_filters|get:rel %}{{active_filters|get:rel|length}}{% else %}0{%endif%} //initialChoicesLength
+    )"
+    x-on:keydown.escape.prevent.stop="open=false"
+    x-id="['x-foreignkey']"
+    class="dropdown"
+    :class="{
+      show: open
+    }"
   >
-    <option value=""></option>
-    {% for id, label in field|select_list %}
-      <option value="{{id}}" {% if id == value.id or is_filter and active_filters|get:rel == id %} selected{% endif %}>
-        {{label}}
-      </option>
-    {% endfor %}
-  </select>
+    <input type="hidden" x-model="selected" name="{{ rel|default:field_name }}"/>
+    <div
+        @click="toggle()"
+        :aria-expanded="open"
+        role="button"
+        :aria-controls="$id('x-foreignkey')"
+        :aria-owns="$id('x-foreignkey')"
+        class="border border-primary rounded p-1 my-2 dropdown-toggle d-flex justify-content-between align-items-center"
+    >
+      <template x-if="selected">
+        <div class="mx-1 p-1">
+          <span x-text="selectedLabel"></span>
+          <button
+            class="btn btn-sm btn-light"
+            @click.prevent.stop="select('')"
+          >X</button>
+        </div>
+      </template>
+      <template x-if="!selected">
+        <span class="text-muted my-2 ps-2">Please choose a {{field_name}} ...</span>
+      </template>
+    </div>
+    <div
+      x-show="open"
+      @click.outside="open=false"
+      :id="$id('x-foreignkey')"
+      :class="{
+        show: open
+      }"
+      style="padding-top: 0;"
+      class="dropdown-menu"
+    >
+      <input
+        x-model.debounce.500ms="search"
+        placeholder="Type to search..."
+        class="form-control dropdown-item"
+      />
+      <template x-for="item in await getFilteredChoices()" :key="item.key">
+        <a href="#" @click.prevent="select(item.key)" class="dropdown-item" x-text="item.label" :class="{'active': item.key==selected}"></a>
+      </template>
+      <template x-if="hasMoreResults">
+        <a @click.prevent.stop="loadMore">Show more...</a>
+      </template>
+    </div>
+  </div>
 {% endblock %}

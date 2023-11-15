@@ -56,11 +56,9 @@ def qs(context, *ignore):
 @register.inclusion_tag('fields/_include_field.html', takes_context=True)
 def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
     import pprint
-    print(type(context))
-    print('**********************')
     new_context = dict({
         k: context.get(k, None)
-        for k in ('record', 'meta', 'request', 'serializer', 'view')
+        for k in ('record', 'meta', 'request', 'serializer', 'view', 'rel', 'active_filters')
     })
     if 'field_name' in kwargs:
         field_name = kwargs['field_name']
@@ -81,14 +79,16 @@ def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
         # Unnamed field, probably a fieldset or tabset
         metadata = {}
 
-    print('metadata', metadata)
+    orig_extra = metadata.pop('extra', {})
 
     if 'field' in kwargs:
         metadata.update(kwargs['field'])
     elif 'field' in context:
         metadata.update(deepcopy(context['field']))
 
-    print('-')
+    extra = metadata.get('extra', {})
+    orig_extra.update(extra)
+    metadata['extra'] = orig_extra
 
     if 'class' not in metadata:
         metadata['class'] = kwargs.get('class', '')

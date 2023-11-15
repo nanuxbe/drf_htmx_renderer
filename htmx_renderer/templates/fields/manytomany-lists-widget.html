@@ -4,26 +4,77 @@
   {{record|fk_str:field }}
 {% endblock %}
 
-{%block edit_value %}
-  <select multiple
-    name="{{rel|default:field_name}}"
-    class="form-select"
-    size="3"
-    hx-trigger="change"
-    hx-get="{%qs rel|default:field_name page_query_param%}&partials=list_content,list_search,list_header,list_footer"
-    hx-target="#data-table-content"
-    {%hx_swap push_url=is_filter%}
+{% block edit_value %}
+  <div
+      x-data="xManytomanyLists(
+        '{{field.extra.search|default:"simple"}}', //searchMethod
+        [{%for selected in value%}'{{selected.pk}}',{% endfor %}], // selected
+        '/api/v1/{{field.extra.related_endpoint.app}}/{{field.extra.related_endpoint.plural}}/?format=json', //baseUrl
+        [
+          {%if field.extra.search != 'backend'%}
+            {% for id, label in field|select_list %}
+              {key: '{{id}}', label: '{{label}}'},
+            {% endfor %}
+          {% else %}
+            {%for selected in value%}
+              {key: '{{selected.pk}}', label: '{{selected|get:"__str__"}}'},
+            {% endfor %}
+          {% endif %}
+        ] //choices
+      )"
+      x-id="['x-manytomany-list']"
+      class="d-flex m2mlists"
   >
-    {%for id, label in field|select_list%}
-      <option value="{{id}}"
-          {%if id|in_m2m_value:value %}selected{%endif%}
-      >
-      {{ label }}
-      </option>
-    {%endfor%}
-  </select>
-{%endblock%}
-
-
-
-
+    <template x-for="item in selected" :key="item">
+      <input type="hidden" name="{{rel|default:field_name}}" :value="item"/>
+    </template>
+    <div>
+      <span class="title d-flex flex-columns">Available {{field_name}}</span>
+      <input class="form-control" x-model="search" placeholder="search" />
+      <ul class="list-from">
+        <template x-for="item in await getFilteredChoices()" :key="item.key">
+          <li>
+            <div class="form-check" >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :value="item.key"
+                :id = "'{{field_name}}_' + item.key" @Change="selectFromList(item.key, 'selectedAvailable')"
+                :checked="isSelectedInList(item.key, 'selectedAvailable')"
+              />
+              <label class="form-check-label" :for="'{{field_name}}_' + item.key"  x-text="item.label"/>
+            </div>
+          <li>
+        </template>
+        <li x-show="canLoadMore">
+          <a @click.prevent="await fetchAndMerge()" href="#">Load more...</a>
+        </li>
+      </ul>
+    </div>
+    <div class="icons btn-group-vertical d-flex flex-column">
+      <button class="btn btn-outline-primary selectall" @click.prevent="await selectAll()" title="unselect all" ><i class="fa-solid fa-backward"></i></button>
+      <button class="btn btn-outline-primary select" @click.prevent="select" title="select"><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="btn btn-outline-primary unselect" @click.prevent="unSelect" title="unselect"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="btn btn-outline-primary unselectall" @click.prevent="unSelectAll" title="select all"><i class="fa-solid fa-forward"></i></button>
+    </div>
+    <div>
+      <span class="title d-flex flex-columns">Chosen {{field_name}}</span>
+      <ul>
+        <template x-for="item in selectedChoices" :key="item.key">
+          <li>
+            <div class="form-check" >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :value="item.key"
+                :id = "'{{field_name}}_' + item.key" @Change="selectFromList(item.key, 'selectedChosen')"
+                :checked="isSelectedInList(item.key, 'selectedChosen')"
+              />
+              <label class="form-check-label" :for="'{{field_name}}_' + item.key"  x-text="item.label"/>
+            </div>
+          <li>
+        </template>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "fields/_default-widget.html" %}
+
+
+{%block edit_value %}
+  <!--select multiple
+    name="{{rel|default:field_name}}"
+    class="form-select select"
+    size="3"
+    hx-trigger="change"
+    hx-get="{%qs rel|default:field_name page_query_param%}&partials=list_content,list_search,list_header,list_footer"
+    hx-target="#data-table-content"
+    {%hx_swap push_url=is_filter%}
+  >
+    {%for id, label in field|select_list%}
+      <option value="{{id}}"
+          {%if id|in_m2m_value:value %}selected{%endif%}
+      >
+      {{ label }}
+      </option>
+    {%endfor%}
+  </select-->
+  <div
+    x-data="xManytomany(
+      '{{field.extra.search|default:"simple"}}', // searchMethod
+      [{%for selected in value%}'{{selected.pk}}', {%endfor%}], // selected
+      '/api/v1/{{field.extra.related_endpoint.app}}/{{field.extra.related_endpoint.plural}}/?format=json', //baseUrl
+      '{%qs field_name page_query_param %}&partials=list_content,list_search,list_header,list_footer&{{field_name}}=', //baseUrlHtmx
+      {% if is_filter %}true{%else%}false{%endif%}, // isFilter
+      [
+        {% if field.extra.search != 'backend' %}
+          {% for id, label in field|select_list %}
+            {key: '{{id}}', label: '{{label}}'},
+          {% endfor %}
+        {% elif value %}
+          {% for selected in value %}
+            {key: '{{selected.pk}}', label: '{{selected|get:"__str__"}}'},
+                                                                              {% endfor %}
+        {% elif is_filters and active_filters|get:rel %}
+          {% for selected in active_filters|get:rel %}
+            {key: '{{selected}}', label: 'N/A'},
+          {% endfor %}
+        {% endif %} 
+      ], // choices
+    )"
+    @keydown.escape.prevent.stop="open=false"
+    x-id="['x-manytomany']"
+    class="dropdown"
+    :class="{
+      show: open
+    }"
+  >
+    <template x-for="item in selected" :key="item">
+      <input type="hidden" name="{{ rel|default:field_name }}" :value="item"/>
+    </template>
+    <div
+      @click="toggle()"
+      :aria-expanded="open"
+      role="button"
+      :aria-controls="$id('x-manytomany')"
+      :aria-owns="$id('x-manytomany')"
+      class="border border-primary rounded p-1 my-2 dropdown-toggle d-flex  align-items-center justify-content-between"
+    >
+      <div class="d-flex">
+        <template x-for="item in choices" :key="item.key">
+          <template x-if="isSelected(item.key)">
+            <div class="border bg-light rounded mx-1 p-1">
+              <span x-text="item.label"></span>
+              <button
+                class="btn btn-sm btn-light"
+                @click.prevent.stop="select(item.key)"
+              >X</button>
+            </div>
+          </template>
+        </template>
+        <template x-if="selected.length == 0">
+          <span class="text-muted my-2 ps-2">
+            Choose {{field_name}} ...
+          </span>
+        </template>
+      </div>
+    </div>
+    <div
+      x-show="open"
+      @click.outside="open=false"
+      :id="$id('x-manytomany-list')"
+      :class="{
+        show: open
+      }"
+      style="padding-top: 0;"
+      class="dropdown-menu"
+    >
+      <input
+        x-model.debounce.500ms="search"
+        placeholder="Type to search..."
+        class="form-control dropdown-item"
+      />
+      <template x-for="item in getFilteredChoices()" :key="item.key">
+        <li class="dropdown-item">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :value="item.key"
+              :id="'{{field_name}}_' + item.key" @change="select(item.key)"
+              :checked="isSelected(item.key)"
+            />
+            <label class="form-check-label" :for="'{{field_name}}_' + item.key" x-text="item.label" />
+          </div>
+        </li>
+      </template>
+      <template x-if="hasMoreResults">
+        <li class="dropdown-item">
+          <a @click.prevent.stop="loadMore">Show more ...</a>
+        </li>
+      </template>
+    </div>
+  </div>
+{%endblock%}
+
+
+
+
