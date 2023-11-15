@@ -1,5 +1,9 @@
 {% extends "fields/_default-widget.html" %}
 
+{% block value_only %}
+  {{record|fk_str:field }}
+{% endblock %}
+
 {% block edit_value %}
   <div
       x-data="xManytomanyLists(

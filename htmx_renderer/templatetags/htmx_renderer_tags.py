@@ -79,7 +79,6 @@ def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
         # Unnamed field, probably a fieldset or tabset
         metadata = {}
 
-    print('metadata', metadata)
     orig_extra = metadata.pop('extra', {})
 
     if 'field' in kwargs:
@@ -90,8 +89,6 @@ def include_field_widget(context, is_editable=False, is_filter=False, **kwargs):
     extra = metadata.get('extra', {})
     orig_extra.update(extra)
     metadata['extra'] = orig_extra
-
-    print('-')
 
     if 'class' not in metadata:
         metadata['class'] = kwargs.get('class', '')
