@@ -20,7 +20,7 @@ class CategoryEndpoint(Endpoint):
     list_display = ('name', )
     search_fields = ('name', )
     ordering_fields = ('name', )
-    page_size = 10
+    page_size = 5
 
 
 @register
@@ -98,8 +98,8 @@ class CareEndpoint(Endpoint):
 class EnoughEndpoint(Endpoint):
     model = Enough
     list_display = ("do",)
-    page_size = 10
     search_fields = ('do', )
+    page_size = 500
 
 
 @register

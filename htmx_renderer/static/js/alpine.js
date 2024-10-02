@@ -125,13 +125,13 @@ document.addEventListener('alpine:init', () => {
       }
       const response = await fetch(url);
       const results = await response.json();
-      if (search=='' && this.resultsCount == 0) {
+      if (search == '' && this.resultsCount == 0) {
         this.resultsCount =results.count;
-        if (results.next) {
-          let gottenPage = /page=(\d+)/.exec(results.next);
-          if (gottenPage && gottenPage[1] - 1 > this.lastPage) {
-            this.lastPage = gottenPage[1] - 1;
-          }
+      }
+      if (search == '' && results.next) {
+        let gottenPage = /page=(\d+)/.exec(results.next);
+        if (gottenPage && gottenPage[1] - 1 > this.lastPage) {
+          this.lastPage = gottenPage[1] - 1;
         }
       }
       return results.results.map((item) => {return { key: '' + item.id, label: item.__str__ }; });
